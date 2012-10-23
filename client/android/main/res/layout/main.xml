@@ -1,13 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    >
-<TextView
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:text="Hello World, SharedHereAdapter"
-    />
-</LinearLayout>
+    android:orientation="vertical" >
 
+    <TextView
+        android:id="@+id/textview_gps"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textSize="16sp" />
+
+    <com.google.android.maps.MapView
+        android:id="@+id/mapview"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.00"
+        android:apiKey="0Tjjb_5Vj7Ms1eMNO-w0aQ440rjFFW6u8xcWnvw"
+        android:clickable="true"
+        android:enabled="true" />
+
+    <Button
+        android:id="@+id/button_refresh"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:onClick="onClickRefresh"
+        android:text="@string/label_refresh_button" />
+
+</LinearLayout>
