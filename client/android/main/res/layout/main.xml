@@ -12,6 +12,14 @@
         android:gravity="center"
         android:textSize="16sp" />
 
+    <TextView
+        android:id="@+id/textview_poi"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textSize="16sp" />
+
     <com.google.android.maps.MapView
         android:id="@+id/mapview"
         android:layout_width="fill_parent"
