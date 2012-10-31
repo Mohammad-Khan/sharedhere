@@ -1,0 +1,12 @@
+create table clients (
+id int not null primary key,
+coordinate,
+timestamp
+);
+
+create table content (
+id int not null primary key,
+coordinate,
+timestamp,
+filename
+);

@@ -2,5 +2,5 @@
 <resources>
     <string name="app_name">SharedHereAdapter</string>
     
-	<string name="label_refresh_button">Refresh</string>
+	<string name="label_refresh_button">Share Here!</string>
 </resources>
