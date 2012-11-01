@@ -1,9 +1,13 @@
 package com.sharedhere;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -13,6 +17,9 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.content.Context;
 import android.location.Location;
@@ -30,7 +37,7 @@ import com.google.android.maps.MapView;
 public class SharedHereAdapter extends MapActivity
 {
 	public static final String SERVER_ADDRESS =
-			"http://server_public_ip/sharedhere/index.php";
+			"http://10.0.2.2/sharedhere/index.php";
 	public static final int REQUEST_POI_DOWNLOAD = 	0;
 	public static final int REQUEST_DATA_UPLOAD = 	1;
 	public static final int REQUEST_DATA_DOWNLOAD =	2;
@@ -71,18 +78,49 @@ public class SharedHereAdapter extends MapActivity
 		httpClient = new DefaultHttpClient();
 		httpPost = new HttpPost(SERVER_ADDRESS);
 		try {
-			List<NameValuePair> requestEntity = new ArrayList<NameValuePair>(1);
+			List<NameValuePair> requestEntity = new ArrayList<NameValuePair>();
 			requestEntity.add(new BasicNameValuePair
-					("id", Integer.toString(REQUEST_POI_DOWNLOAD)));
+					("request_id", Integer.toString(REQUEST_POI_DOWNLOAD)));
 			httpPost.setEntity(new UrlEncodedFormEntity(requestEntity));
 			
 			httpResponse = httpClient.execute(httpPost);
-			// TODO extract a JSON array of coordinates and pin onto the MapView
+			HttpEntity responseEntity = httpResponse.getEntity();
+			InputStream is = responseEntity.getContent();
+			BufferedReader br = new BufferedReader(
+					new InputStreamReader(is),
+					80
+			);
+			StringBuilder sb = new StringBuilder();
+			String line = null;
+			while ((line=br.readLine()) != null) {
+				sb.append(line+"\n");
+			}
+			is.close();
 			
-		} catch (ClientProtocolException exception) {
+			String result = sb.toString();
+			Log.i("HTTP_Info", "Result: "+result);
+			JSONArray jArray = new JSONArray(result);
+			JSONObject jsonData = jArray.getJSONObject(0);
+			
+			// Temp: Display one of the points to the textview
+			TextView httpTextView = (TextView) findViewById(R.id.textview_poi);
+			httpTextView.setText(Double.toString(jsonData.getDouble("lat")) +
+					"," + Double.toString(jsonData.getDouble("lon")) + ")");
+			// print one the points to Log
+			Log.i("HTTP_Info", "POI: "+"("+
+							Double.toString(jsonData.getDouble("lat"))+
+							","+Double.toString(jsonData.getDouble("lon"))+")");
+			
+		} catch (ClientProtocolException cpeException) {
+			Log.e("HTTP_Err", "HTTP Protocol Exception: "+cpeException.getMessage());
 			// Handle exception
 		} catch (IOException ioException) {
+			Log.e("HTTP_Err", "IO Exception: "+ioException.getMessage());
 			// Handle IO Exception
+		} catch (JSONException jsonException) {
+			Log.e("HTTP_Err", "JSON Exceptoin: "+jsonException.getMessage());
+		} catch (Exception exception) {
+			Log.e("HTTP_Err", "Other Exceptoin: "+exception.getMessage());
 		}
 	}
 	
