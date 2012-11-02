@@ -37,7 +37,7 @@ import com.google.android.maps.MapView;
 public class SharedHereAdapter extends MapActivity
 {
 	public static final String SERVER_ADDRESS =
-			"http://10.0.2.2/sharedhere/index.php";
+			"http://sharedhere.zapto.org/index.php";
 	public static final int REQUEST_POI_DOWNLOAD = 	0;
 	public static final int REQUEST_DATA_UPLOAD = 	1;
 	public static final int REQUEST_DATA_DOWNLOAD =	2;
@@ -61,7 +61,7 @@ public class SharedHereAdapter extends MapActivity
 
 		initPoi();
 		initTracking();
-		initMapView(-location.getLatitude(), location.getLongitude()); 
+		initMapView(location.getLatitude(), location.getLongitude()); 
 	}
 
 	@Override
@@ -113,10 +113,8 @@ public class SharedHereAdapter extends MapActivity
 			
 		} catch (ClientProtocolException cpeException) {
 			Log.e("HTTP_Err", "HTTP Protocol Exception: "+cpeException.getMessage());
-			// Handle exception
 		} catch (IOException ioException) {
 			Log.e("HTTP_Err", "IO Exception: "+ioException.getMessage());
-			// Handle IO Exception
 		} catch (JSONException jsonException) {
 			Log.e("HTTP_Err", "JSON Exceptoin: "+jsonException.getMessage());
 		} catch (Exception exception) {
@@ -128,8 +126,8 @@ public class SharedHereAdapter extends MapActivity
 	 * 
 	 */
 	private void initTracking() {
-		if (locManager == null)
-			locManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		locManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		location = locManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
 		if (locListener == null)
 			locListener = new LocationListener() {
@@ -138,7 +136,7 @@ public class SharedHereAdapter extends MapActivity
 				String lon = String.valueOf(location.getLongitude());
 				Log.e("GPS", "location changed: lat="+lat+", lon="+lon);
 
-				location = locManager.getLastKnownLocation("gps");
+				location = locManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
 				mapController.setCenter(new LatLonPoint(location.getLatitude(), location.getLongitude()));
 				mapView.invalidate();
@@ -151,27 +149,21 @@ public class SharedHereAdapter extends MapActivity
 			}
 		};
 
-		locManager.requestLocationUpdates("gps", 0, 0, locListener);
-
-		if (location == null)
-			location = locManager.getLastKnownLocation("gps");
+		locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locListener);
 	}
 
 	/**
 	 * 
 	 */
 	private void initMapView(double latitude, double longitude) {
-		if (mapView == null) {
-			mapView = (MapView) findViewById(R.id.mapview);
-			mapView.setBuiltInZoomControls(true);
-			//mapView.setSatellite(true);
-		}
+		Log.e("GPS_initmapview", "lat="+latitude+", lon="+longitude);
+		mapView = (MapView) findViewById(R.id.mapview);
+		mapView.setBuiltInZoomControls(true);
+		//mapView.setSatellite(true);
 
-		if (mapController == null) {
-			mapController = mapView.getController();
-			mapController.setZoom(18);
-			mapController.setCenter(new LatLonPoint(latitude, longitude));
-		}
+		mapController = mapView.getController();
+		mapController.setZoom(18);
+		mapController.setCenter(new LatLonPoint(latitude, longitude));
 	}
 
 	/**
@@ -188,5 +180,6 @@ public class SharedHereAdapter extends MapActivity
 	public void updateView() {
 		final TextView valueView = (TextView) findViewById(R.id.textview_gps);
 		valueView.setText(Double.toString(location.getLatitude()) + "," + Double.toString(location.getLongitude()));    
+		mapController.setCenter(new LatLonPoint(location.getLatitude(), location.getLongitude()));
 	}
 }
