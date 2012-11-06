@@ -30,21 +30,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 
 public class SharedHereAdapter extends MapActivity
 {
-	public static final String SERVER_ADDRESS =
-			"http://sharedhere.zapto.org/index.php";
-	public static final int REQUEST_POI_DOWNLOAD = 	0;
-	public static final int REQUEST_DATA_UPLOAD = 	1;
-	public static final int REQUEST_DATA_DOWNLOAD =	2;
-	
-	private HttpClient httpClient = null;
-	private HttpPost httpPost = null;
-	private HttpResponse httpResponse = null;
 	
 	private MapView mapView = null;
 	private MapController mapController = null;
@@ -59,9 +51,21 @@ public class SharedHereAdapter extends MapActivity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 
-		initPoi();
-		initTracking();
-		initMapView(location.getLatitude(), location.getLongitude()); 
+		// get the Points of Interest
+		SHClientServer cs = new SHClientServer();
+		//List<GeoPoint> points = cs.getPoi();
+		//cs.getPoi();
+		
+		//SHLocation l = new SHLocation(41.23430739, -81.2343922, 10);
+		//JSONArray jArray = cs.listContent(l);
+		
+		//cs.download("droid.jpg");
+		//cs.upload("/mnt/sdcard/droid_img.bmp");
+		//cs.upload("/mnt/sdcard/index.txt");
+		
+		//initTracking();
+		//initMapView(location.getLatitude(), location.getLongitude());
+		
 	}
 
 	@Override
@@ -70,57 +74,6 @@ public class SharedHereAdapter extends MapActivity
 		return false;
 	}
 
-	/**
-	 * Request the server for "points of interest"
-	 * 
-	 */
-	private void initPoi() {
-		httpClient = new DefaultHttpClient();
-		httpPost = new HttpPost(SERVER_ADDRESS);
-		try {
-			List<NameValuePair> requestEntity = new ArrayList<NameValuePair>();
-			requestEntity.add(new BasicNameValuePair
-					("request_id", Integer.toString(REQUEST_POI_DOWNLOAD)));
-			httpPost.setEntity(new UrlEncodedFormEntity(requestEntity));
-			
-			httpResponse = httpClient.execute(httpPost);
-			HttpEntity responseEntity = httpResponse.getEntity();
-			InputStream is = responseEntity.getContent();
-			BufferedReader br = new BufferedReader(
-					new InputStreamReader(is),
-					80
-			);
-			StringBuilder sb = new StringBuilder();
-			String line = null;
-			while ((line=br.readLine()) != null) {
-				sb.append(line+"\n");
-			}
-			is.close();
-			
-			String result = sb.toString();
-			Log.i("HTTP_Info", "Result: "+result);
-			JSONArray jArray = new JSONArray(result);
-			JSONObject jsonData = jArray.getJSONObject(0);
-			
-			// Temp: Display one of the points to the textview
-			TextView httpTextView = (TextView) findViewById(R.id.textview_poi);
-			httpTextView.setText(Double.toString(jsonData.getDouble("lat")) +
-					"," + Double.toString(jsonData.getDouble("lon")) + ")");
-			// print one the points to Log
-			Log.i("HTTP_Info", "POI: "+"("+
-							Double.toString(jsonData.getDouble("lat"))+
-							","+Double.toString(jsonData.getDouble("lon"))+")");
-			
-		} catch (ClientProtocolException cpeException) {
-			Log.e("HTTP_Err", "HTTP Protocol Exception: "+cpeException.getMessage());
-		} catch (IOException ioException) {
-			Log.e("HTTP_Err", "IO Exception: "+ioException.getMessage());
-		} catch (JSONException jsonException) {
-			Log.e("HTTP_Err", "JSON Exceptoin: "+jsonException.getMessage());
-		} catch (Exception exception) {
-			Log.e("HTTP_Err", "Other Exceptoin: "+exception.getMessage());
-		}
-	}
 	
 	/**
 	 * 
