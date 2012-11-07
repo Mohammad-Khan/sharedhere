@@ -51,6 +51,11 @@ if (sh_mkdir("content/$latitude", 0777)) {
 	print("Could not create upload dir content/$latitude");
 	exit;
 }
+
+if (is_file($upload_file_path)) {
+	print("Filename already exists");
+	exit;
+}
 	
 // connect to database
 $conn = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
