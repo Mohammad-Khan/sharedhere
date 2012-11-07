@@ -1,4 +1,4 @@
-package com.sharedhere;
+package com.sharedhere.model;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -28,34 +28,36 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.google.android.maps.GeoPoint;
-
 import android.os.Environment;
 import android.util.Log;
 
 public class SHClientServer {
-	public static final String SERVER_ADDRESS = "http://10.0.2.2/sharedhere/";
-			//"http://sharedhere.zapto.org/index.php";
 	public static final int REQUEST_POI_DOWNLOAD = 	0;
 	public static final int REQUEST_DATA_UPLOAD = 	1;
 	public static final int REQUEST_DATA_DOWNLOAD =	2;
 	
+	private String serverAddress = null;
+
 	private HttpClient httpClient = null;
 	private HttpPost httpPost = null;
 	private HttpResponse httpResponse = null;
+	
+	public SHClientServer (String server) {
+		this.serverAddress = server;
+	}
 	
 	/**
 	 * Request the server for "points of interest"
 	 * 
 	 * @author naser
 	 * 
-	 * @return	List of GeoPoint objects
+	 * @return List of GeoPoint objects
 	 */
-	public List<GeoPoint> getPoi() {
+	public List<SHLocation> getPoi() {
 		httpClient = new DefaultHttpClient();
-		String serverPage = SERVER_ADDRESS+"init.php";
+		String serverPage = serverAddress+"poi.php";
 		httpPost = new HttpPost(serverPage);
-		List<GeoPoint> points = null;
+		List<SHLocation> locations = null;
 		JSONArray jsonArray = null;
 		JSONObject jsonObject = null;
 		HttpEntity responseEntity = null;
@@ -70,11 +72,13 @@ public class SHClientServer {
 			List<NameValuePair> requestEntity = new ArrayList<NameValuePair>();
 			requestEntity.add(new BasicNameValuePair
 					("request_id", Integer.toString(REQUEST_POI_DOWNLOAD)));
-			httpPost.setEntity(new UrlEncodedFormEntity(requestEntity));
 			
+			httpPost.setEntity(new UrlEncodedFormEntity(requestEntity));
 			httpResponse = httpClient.execute(httpPost);
+			
 			responseEntity = httpResponse.getEntity();
 			inputStream = responseEntity.getContent();
+			
 			inputStreamReader = new InputStreamReader(inputStream);
 			bufferedReader = new BufferedReader(inputStreamReader);
 			stringBuilder = new StringBuilder();	
@@ -82,18 +86,20 @@ public class SHClientServer {
 			while ((line=bufferedReader.readLine()) != null) {
 				stringBuilder.append(line+"\n");
 			}
+			
 			inputStream.close();
 			
 			result = stringBuilder.toString();
-			//Log.i("HTTP_Info", "Result: "+result);
+			//Log.i("getPoi", "Result: "+result);
 			
 			jsonArray = new JSONArray(result);
-			points = new ArrayList<GeoPoint>(); //GeoPoint[jsonArray.length()];
+			locations = new ArrayList<SHLocation>();
+			
 			for(int i=0; i<jsonArray.length(); i++) {
 				jsonObject = jsonArray.getJSONObject(i);
-				double x = (double)jsonObject.getDouble("latitude");
-				double y = (double)jsonObject.getDouble("longitude");
-				points.add(new GeoPoint((int)x, (int)y)); // TODO Points should be double
+				double lat = (double)jsonObject.getDouble("latitude");
+				double lon = (double)jsonObject.getDouble("longitude");
+				locations.add(new SHLocation(lat, lon));
 			}
 
 		} catch (ClientProtocolException e) {
@@ -106,21 +112,22 @@ public class SHClientServer {
 			Log.e("getPoi_Err", "Other Exceptoin: "+e.getMessage());
 		}
 		
-		return points;
+		return locations;
 	}
 	
 	/**
 	 * Lists the files that are available for a particular POI
 	 * 
-	 *  @author naser
+	 * @author naser
 	 *  
-	 *  @param	poi	The point of Interest for which files available are desired
-	 *  @return		list of available files with their details in a JSONArray
+	 * @param	poi	The point of Interest for which files available are desired
+	 * @return	List of available files with their details in a JSONArray
 	 */
 	public JSONArray listContent(SHLocation location) {
-		String serverPage = SERVER_ADDRESS + "download.php";
+		String serverPage = serverAddress + "download.php";
 		httpClient = new DefaultHttpClient();
 		httpPost = new HttpPost(serverPage);
+		
 		HttpEntity responseEntity = null;
 		InputStream inputStream = null;
 		InputStreamReader inputStreamReader = null;
@@ -158,20 +165,20 @@ public class SHClientServer {
 			jContentArray = new JSONArray(result);
 			for(int i=0; i<jContentArray.length(); i++) {
 				jsonObject = jContentArray.getJSONObject(i);
-				String filename = (String)jsonObject.getString("filename"); // TODO change to double???
+				String filename = (String)jsonObject.getString("filename");
 				String description = (String)jsonObject.getString("description");
 				String timestamp = (String)jsonObject.getString("timestamp");
 				Log.i("download_info", filename+description+timestamp);
 			}
 
 		} catch (ClientProtocolException cpeException) {
-			Log.e("download_Err", "HTTP Protocol Exception: "+cpeException.getMessage());
+			Log.e("download_error", "HTTP Protocol Exception: "+cpeException.getMessage());
 		} catch (IOException ioException) {
-			Log.e("download_Err", "IO Exception: "+ioException.getMessage());
+			Log.e("download_error", "IO Exception: "+ioException.getMessage());
 		} catch (JSONException jsonException) {
-			Log.e("download_Err", "JSON Exceptoin: "+jsonException.getMessage());
+			Log.e("download_error", "JSON Exceptoin: "+jsonException.getMessage());
 		} catch (Exception exception) {
-			Log.e("download_Err", "Other Exceptoin: "+exception.getMessage());
+			Log.e("download_error", "Other Exceptoin: "+exception.getMessage());
 		}
 		
 		return jContentArray;
@@ -182,12 +189,12 @@ public class SHClientServer {
 	 * 
 	 * @author naser
 	 * 
-	 * @param	filename	filename to be downloaded
+	 * @param filename to be downloaded
 	 * @return	
 	 * 
 	 */
-	public void download(String filename) {
-		String serverFileLocation = SERVER_ADDRESS+"content/";
+	public void download(String filename, double latitude, double longitude) {
+		String serverFileLocation = serverAddress+"content/"+latitude+"/"+longitude+"/";
 		File sdCardRoot = Environment.getExternalStorageDirectory();
 		try {
 		    //this is the file to be downloaded
@@ -210,14 +217,25 @@ public class SHClientServer {
 		    fileOutput.close();
 
 		} catch (MalformedURLException e) {
-		    Log.e("SH_download", e.getMessage());
+		    Log.e("download", e.getMessage());
 		} catch (IOException e) {
 		    Log.e("SH_download", e.getMessage());
 		}
 	}
 	
-	public void upload(String pathname) {
-		String serverPage = SERVER_ADDRESS + "upload.php";
+	/**
+	 * Upload file
+	 * 
+	 * @author naser
+	 * 
+	 * @param pathname - file to be upload
+	 * @param latitude - latitude associated with file
+	 * @param longitude - longitude associated with file
+	 * 
+	 * @return 
+	 */
+	public void upload(String pathname, double latitude, double longitude) {
+		String serverPage = serverAddress + "upload.php";
 		HttpClient httpclient = new DefaultHttpClient();
 		HttpEntity responseEntity = null;
 		StringBody requestId=null;
@@ -240,15 +258,17 @@ public class SHClientServer {
             //reqEntity.addPart("comment", comment);
             requestId = new StringBody(String.valueOf(REQUEST_DATA_UPLOAD));
             requestEntity.addPart("request_id", requestId);
+            requestEntity.addPart("latitude", new StringBody(String.valueOf(latitude)));
+            requestEntity.addPart("longitude", new StringBody(String.valueOf(longitude)));
 
             httpPost.setEntity(requestEntity);
 
-            Log.i("UPLOAD_info","executing request " + httpPost.getRequestLine());
+            Log.i("upload_info","executing request " + httpPost.getRequestLine());
             httpResponse = httpclient.execute(httpPost);
 
             responseEntity = httpResponse.getEntity();
             
-            //Log.i("HTTP_Info", resEntity.toString());
+            Log.i("upload_info", responseEntity.toString());
 
 			inputStream = responseEntity.getContent();
 			inputStreamReader = new InputStreamReader(inputStream);
@@ -261,13 +281,10 @@ public class SHClientServer {
 			inputStream.close();
 			
 			result = stringBuilder.toString();
-			Log.i("upload_infot", "Result: "+result);
+			Log.i("upload_info", "Result: "+result);
          
         } catch (Exception e){
-           Log.e("upload_Err", e.getMessage());
-        }
-		
+           Log.e("upload_error", e.getMessage());
+        }	
 	}
-	
-	
 }

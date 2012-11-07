@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">SharedHereAdapter</string>
+    <string name="app_name">SharedHere</string>
     
-	<string name="label_refresh_button">Share Here!</string>
+    <string name="server_address">http://10.0.0.240/sharedhere/</string>
+    
+	<string name="label_checkhere_button">Check Here!</string>
+	<string name="label_sharehere_button">Share Here!</string>
+	
+	<string name="label_upload_button">Upload</string>
+	<string name="label_upload_cancel_button">Cancel</string>
+	
+	<string name="label_download_done_button">Done</string>
+	
 </resources>

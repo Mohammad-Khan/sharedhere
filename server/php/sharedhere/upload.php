@@ -2,31 +2,88 @@
 
 require_once('./Constants.php');
 
+function sh_location_id($db_conn, $latitude, $longitude) {
+	$query = "SELECT * from location where latitude = \"$latitude\" and longitude = \"$longitude\"";
+	$mysql_result = mysql_query($query);
+	$num_rows = mysql_num_rows($mysql_result);
+
+	if ($num_rows > 0) {
+		$row = mysql_fetch_row($mysql_result);
+		return $row[0];
+	} else {
+		return -1;
+	}
+}
+
+function sh_mkdir($dir, $permission) {
+	if (!is_dir($dir)) {
+		if (mkdir($dir, $permission)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	return true;
+}
+
 $request_type = $_POST['request_id'];
 if ($request_type != REQUEST_DATA_UPLOAD) {
-	print  ("Wrong request type");
+	print("Wrong request type");
 	exit;
 }
 
-	$posted_file_name = $_FILES['sharedfile']['name'];
-	$upload_dir = './content/';
-	$upload_file_path = $upload_dir . basename($posted_file_name);
+$latitude = number_format($_POST['latitude'], 4, '.', '');
+$longitude = number_format($_POST['longitude'], 4, '.', '');
+$posted_file_name = $_FILES['sharedfile']['name'];
+$upload_dir = "content/$latitude/$longitude/";
+$upload_file_path = $upload_dir . basename($posted_file_name);
 
-	$conn = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
-	if (!$conn) print("Database connection failed"); 
-	if (!mysql_select_db(DB_NAME, $conn)) print("Database selection failed");
-	$query = 'INSERT INTO content(timestamp, filename) VALUES("'.
-		date('Y-m-d H:i:s') .'","' . $posted_file_name . '")';
-	$mysql_result = mysql_query($query);
-	if (!$mysql_result) {
-		print("MySQL Insert Query failed".mysql_error());
+// make sure directory for upload exists
+if (sh_mkdir("content/$latitude", 0777)) {
+	if (sh_mkdir("content/$latitude/$longitude", 0777)) {
+		print("Upload dir successfully created");
+	} else {
+		print("Could not create upload dir content/$latitude/$longitude");
 		exit;
 	}
+} else {
+	print("Could not create upload dir content/$latitude");
+	exit;
+}
 	
-	if (move_uploaded_file($_FILES['sharedfile']['tmp_name'], $upload_file_path)) {
-    	print ("Upload succeeded");
-	} else {
-    	print ("File copy operation failed");
+// connect to database
+$conn = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
+if (!$conn) print("Database connection failed"); 
+if (!mysql_select_db(DB_NAME, $conn)) print("Database selection failed");
+
+// get location id, if not found we have a new location that we need to add
+$location_id = sh_location_id($conn, $latitude, $longitude);
+
+if ($location_id < 0) {
+	$query = 'INSERT INTO location(latitude, longitude) VALUES("' . $latitude . '","' . $longitude . '")';	
+	$mysql_result = mysql_query($query);
+
+	if (!$mysql_result) {
+		print("MySQL Insert Query failed" . mysql_error());
+		exit;
 	}
+
+	$location_id = sh_location_id($conn, $latitude, $longitude);
+}
+
+// insert info about file
+$query = 'INSERT INTO content(location_id, filename, timestamp) VALUES("' . $location_id . '","' . $posted_file_name . '","' . date('Y-m-d H:i:s') . '")';
+$mysql_result = mysql_query($query);
+if (!$mysql_result) {
+	print("MySQL Insert Query failed" . mysql_error());
+	exit;
+}
+
+if (move_uploaded_file($_FILES['sharedfile']['tmp_name'], $upload_file_path)) {
+   	print ("Upload succeeded");
+} else {
+   	print ("File copy operation failed");
+}
 
 ?>

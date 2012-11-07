@@ -1,15 +1,13 @@
-package com.sharedhere;
+package com.sharedhere.model;
 
 public class SHLocation {
 	
 	private double latitude;
 	private double longitude;
-	private int radius;
 	
-	public SHLocation(double lat, double lon, int rad) {
+	public SHLocation(double lat, double lon) {
 		latitude = lat;
 		longitude = lon;
-		radius = rad;
 	}
 
 	public double getLatitude() {
@@ -27,14 +25,4 @@ public class SHLocation {
 	public void setLongitude(double longitude) {
 		this.longitude = longitude;
 	}
-
-	public int getRadius() {
-		return radius;
-	}
-
-	public void setRadius(int radius) {
-		this.radius = radius;
-	}
-	
-	
 }
