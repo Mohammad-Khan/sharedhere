@@ -27,14 +27,19 @@ function sh_mkdir($dir, $permission) {
 	return true;
 }
 
+function sh_truncate($string, $char, $num) {
+	return substr($string, 0, 1+strpos($string, $char)+$num);		
+}
+
 $request_type = $_POST['request_id'];
 if ($request_type != REQUEST_DATA_UPLOAD) {
 	print("Wrong request type");
 	exit;
 }
 
-$latitude = number_format($_POST['latitude'], 4, '.', '');
-$longitude = number_format($_POST['longitude'], 4, '.', '');
+$latitude = sh_truncate($_POST['latitude'], ".", 4);
+$longitude = sh_truncate($_POST['longitude'], ".", 4);
+
 $posted_file_name = $_FILES['sharedfile']['name'];
 $upload_dir = "content/$latitude/$longitude/";
 $upload_file_path = $upload_dir . basename($posted_file_name);

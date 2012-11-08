@@ -12,14 +12,6 @@
         android:gravity="center"
         android:textSize="16sp" />
 
-    <TextView
-        android:id="@+id/textview_poi"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:textSize="16sp" />
-
     <com.google.android.maps.MapView
         android:id="@+id/mapview"
         android:layout_width="fill_parent"
@@ -28,13 +20,6 @@
         android:apiKey="0Tjjb_5Vj7Ms1eMNO-w0aQ440rjFFW6u8xcWnvw"
         android:clickable="true"
         android:enabled="true" />
-
-     <Button
-        android:id="@+id/button_checkhere"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:onClick="onClickCheckHere"
-        android:text="@string/label_checkhere_button" />
      
     <Button
         android:id="@+id/button_sharehere"
