@@ -1,6 +1,7 @@
 <?php
 
 require_once('./Constants.php');
+require_once('./Functions.php');
 
 	if (isset($_POST['request_id']) && $_POST['request_id'] != '') {
 		// Connect to MySQL DB
@@ -9,12 +10,11 @@ require_once('./Constants.php');
 
 		// Check for type of request
 		if ($_POST['request_id'] == REQUEST_POI_DOWNLOAD) {
-			$latitude = $_POST['latitude'];
-			$longitude = $_POST['longitude'];
-			$location_subquery = "SELECT id FROM location WHERE latitude = $latitude AND ".
-				"longitude = $longitude"; 
-			$query = "SELECT filename,description,timestamp FROM content ".
-					"WHERE location_id IN ($location_subquery)";
+			$latitude = sh_truncate($_POST['latitude'], ".", 4);
+			$longitude = sh_truncate($_POST['longitude'], ".", 4);
+			//$location_subquery = "SELECT id FROM location WHERE latitude = $latitude AND longitude = $longitude"; 
+			//$query = "SELECT filename,description,timestamp FROM content WHERE location_id IN ($location_subquery)";
+			$query = "SELECT filename,timestamp,description,latitude,longitude FROM content,location WHERE latitude = \"$latitude\" AND longitude = \"$longitude\" AND location.id = content.location_id";
 			$mysql_result = mysql_query($query);
 			if(!$mysql_result) {
 				print("Database Query faild: ".mysql_error());
@@ -27,6 +27,8 @@ require_once('./Constants.php');
 				$output[$i]['filename'] = $row['filename'];
 				$output[$i]['description'] = $row['description'];
 				$output[$i]['timestamp'] = $row['timestamp'];
+				$output[$i]['latitude'] = $row['latitude'];
+				$output[$i]['longitude'] = $row['longitude'];
 				$i++;
 			}
 		} else {

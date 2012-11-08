@@ -20,6 +20,13 @@
         android:apiKey="0Tjjb_5Vj7Ms1eMNO-w0aQ440rjFFW6u8xcWnvw"
         android:clickable="true"
         android:enabled="true" />
+
+     <Button
+        android:id="@+id/button_checkhere"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:onClick="onClickCheckHere"
+        android:text="@string/label_checkhere_button" />
      
     <Button
         android:id="@+id/button_sharehere"

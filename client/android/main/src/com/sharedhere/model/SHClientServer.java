@@ -28,6 +28,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.location.Location;
 import android.os.Environment;
 import android.util.Log;
 
@@ -123,7 +124,7 @@ public class SHClientServer {
 	 * @param	poi	The point of Interest for which files available are desired
 	 * @return	List of available files with their details in a JSONArray
 	 */
-	public JSONArray listContent(SHLocation location) {
+	public JSONArray listContent(Location location) {
 		String serverPage = serverAddress + "download.php";
 		httpClient = new DefaultHttpClient();
 		httpPost = new HttpPost(serverPage);
@@ -168,7 +169,10 @@ public class SHClientServer {
 				String filename = (String)jsonObject.getString("filename");
 				String description = (String)jsonObject.getString("description");
 				String timestamp = (String)jsonObject.getString("timestamp");
-				Log.i("download_info", filename+description+timestamp);
+				String latitude = (String)jsonObject.getString("latitude");
+				String longitude = (String)jsonObject.getString("longitude");
+				
+				Log.i("download_info", filename+description+timestamp+latitude+longitude);
 			}
 
 		} catch (ClientProtocolException cpeException) {

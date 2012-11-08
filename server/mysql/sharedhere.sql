@@ -1,7 +1,7 @@
 CREATE TABLE location (
         id INT PRIMARY KEY AUTO_INCREMENT,
-        latitude DECIMAL(10,8),
-        longitude DECIMAL(11,8),
+        latitude DECIMAL(10,4),
+        longitude DECIMAL(11,4),
         radius INT
 );
 
