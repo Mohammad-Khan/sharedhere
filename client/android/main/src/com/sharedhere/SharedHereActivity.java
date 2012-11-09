@@ -5,6 +5,7 @@ import java.util.List;
 import org.json.JSONArray;
 
 import android.content.Context;
+import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -24,6 +25,8 @@ import com.sharedhere.model.LatLonPoint;
 import com.sharedhere.model.SHClientServer;
 import com.sharedhere.model.SHItemizedOverlay;
 import com.sharedhere.model.SHLocation;
+
+import edu.luc.comp413.project2.android.GameActivity;
 
 public class SharedHereActivity extends MapActivity
 {
@@ -143,6 +146,9 @@ public class SharedHereActivity extends MapActivity
 		}
 		
 		JSONArray jArray = shConnection.listContent(locationCurrent);
+		
+		//Intent i = new Intent(this, DownloadActivity.class);
+		//startActivity(i);
 	}
 
 	/**
@@ -155,11 +161,14 @@ public class SharedHereActivity extends MapActivity
 		//shConnection.download("droid.jpg");
 
 		// Lars: testing upload
-		//shConnection.upload("/mnt/sdcard/dont_panic.jpg", locationCurrent.getLatitude(), locationCurrent.getLongitude());
-		//shConnection.upload("/mnt/sdcard/ultimate_trick.jpg", locationCurrent.getLatitude(), locationCurrent.getLongitude());
-		//shConnection.upload("/mnt/sdcard/bsdrest.gif", locationCurrent.getLatitude(), locationCurrent.getLongitude());
-		//shConnection.upload("/mnt/sdcard/tia_logo_large.jpg", locationCurrent.getLatitude(), locationCurrent.getLongitude());
-		//shConnection.upload("/mnt/sdcard/etmessage_nrao.gif", locationCurrent.getLatitude(), locationCurrent.getLongitude());
+		//shConnection.upload("/mnt/sdcard/dont_panic.jpg", locationCurrent.getLatitude(), locationCurrent.getLongitude(), "");
+		//shConnection.upload("/mnt/sdcard/ultimate_trick.jpg", locationCurrent.getLatitude(), locationCurrent.getLongitude(), "");
+		//shConnection.upload("/mnt/sdcard/bsdrest.gif", locationCurrent.getLatitude(), locationCurrent.getLongitude(), "");
+		//shConnection.upload("/mnt/sdcard/tia_logo_large.jpg", locationCurrent.getLatitude(), locationCurrent.getLongitude(), "");
+		//shConnection.upload("/mnt/sdcard/etmessage_nrao.gif", locationCurrent.getLatitude(), locationCurrent.getLongitude(), "");
+	
+		//Intent i = new Intent(this, UploadActivity.class);
+		//startActivity(i);
 	}
 
 	/**

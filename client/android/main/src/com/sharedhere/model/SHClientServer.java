@@ -238,7 +238,7 @@ public class SHClientServer {
 	 * 
 	 * @return 
 	 */
-	public void upload(String pathname, double latitude, double longitude) {
+	public void upload(String pathname, double latitude, double longitude, String description) {
 		String serverPage = serverAddress + "upload.php";
 		HttpClient httpclient = new DefaultHttpClient();
 		HttpEntity responseEntity = null;
@@ -264,7 +264,8 @@ public class SHClientServer {
             requestEntity.addPart("request_id", requestId);
             requestEntity.addPart("latitude", new StringBody(String.valueOf(latitude)));
             requestEntity.addPart("longitude", new StringBody(String.valueOf(longitude)));
-
+            requestEntity.addPart("description", new StringBody(description));
+            
             httpPost.setEntity(requestEntity);
 
             Log.i("upload_info","executing request " + httpPost.getRequestLine());
