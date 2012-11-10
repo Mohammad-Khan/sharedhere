@@ -28,7 +28,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.location.Location;
 import android.os.Environment;
 import android.util.Log;
 
@@ -124,7 +123,7 @@ public class SHClientServer {
 	 * @param	poi	The point of Interest for which files available are desired
 	 * @return	List of available files with their details in a JSONArray
 	 */
-	public JSONArray listContent(Location location) {
+	public JSONArray listContent(SHLocation location) {
 		String serverPage = serverAddress + "download.php";
 		httpClient = new DefaultHttpClient();
 		httpPost = new HttpPost(serverPage);
@@ -167,12 +166,13 @@ public class SHClientServer {
 			for(int i=0; i<jContentArray.length(); i++) {
 				jsonObject = jContentArray.getJSONObject(i);
 				String filename = (String)jsonObject.getString("filename");
-				String description = (String)jsonObject.getString("description");
+				String size = (String)jsonObject.getString("size");
 				String timestamp = (String)jsonObject.getString("timestamp");
+				String description = (String)jsonObject.getString("description");	
 				String latitude = (String)jsonObject.getString("latitude");
 				String longitude = (String)jsonObject.getString("longitude");
 				
-				Log.i("download_info", filename+description+timestamp+latitude+longitude);
+				Log.i("download_info", filename+","+size+","+timestamp+","+description+","+latitude+","+longitude);
 			}
 
 		} catch (ClientProtocolException cpeException) {
@@ -197,8 +197,8 @@ public class SHClientServer {
 	 * @return	
 	 * 
 	 */
-	public void download(String filename, double latitude, double longitude) {
-		String serverFileLocation = serverAddress+"content/"+latitude+"/"+longitude+"/";
+	public void download(String filename, SHLocation location) {
+		String serverFileLocation = serverAddress+"content/"+location.getLatitude()+"/"+location.getLongitude()+"/";
 		File sdCardRoot = Environment.getExternalStorageDirectory();
 		try {
 		    //this is the file to be downloaded
@@ -238,7 +238,7 @@ public class SHClientServer {
 	 * 
 	 * @return 
 	 */
-	public void upload(String pathname, double latitude, double longitude, String description) {
+	public void upload(String pathname, SHLocation location, String description) {
 		String serverPage = serverAddress + "upload.php";
 		HttpClient httpclient = new DefaultHttpClient();
 		HttpEntity responseEntity = null;
@@ -259,11 +259,10 @@ public class SHClientServer {
 
             requestEntity = new MultipartEntity();
             requestEntity.addPart("sharedfile", inputFile);
-            //reqEntity.addPart("comment", comment);
             requestId = new StringBody(String.valueOf(REQUEST_DATA_UPLOAD));
             requestEntity.addPart("request_id", requestId);
-            requestEntity.addPart("latitude", new StringBody(String.valueOf(latitude)));
-            requestEntity.addPart("longitude", new StringBody(String.valueOf(longitude)));
+            requestEntity.addPart("latitude", new StringBody(String.valueOf(location.getLatitude())));
+            requestEntity.addPart("longitude", new StringBody(String.valueOf(location.getLongitude())));
             requestEntity.addPart("description", new StringBody(description));
             
             httpPost.setEntity(requestEntity);

@@ -21,12 +21,9 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
-import com.sharedhere.model.LatLonPoint;
 import com.sharedhere.model.SHClientServer;
 import com.sharedhere.model.SHItemizedOverlay;
 import com.sharedhere.model.SHLocation;
-
-import edu.luc.comp413.project2.android.GameActivity;
 
 public class SharedHereActivity extends MapActivity
 {
@@ -34,7 +31,6 @@ public class SharedHereActivity extends MapActivity
 	private MapController mapController = null;
 	private List<Overlay> mapOverlays = null;
 
-	private Location locationCurrent = null;
 	private LocationManager locationManager = null;
 	private LocationListener locationListener = null;
 	private String locationProvider = null;
@@ -42,6 +38,7 @@ public class SharedHereActivity extends MapActivity
 
 	private SHClientServer shConnection = null;
 	private SHItemizedOverlay shOverlay = null;
+	private SHLocation shCurrentLocation = null;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -51,15 +48,7 @@ public class SharedHereActivity extends MapActivity
 
 		//shConnection = new SHClientServer(findViewById(R.string.server_address).toString());
 		shConnection = new SHClientServer("http://10.0.0.240/sharedhere/");
-		//List<GeoPoint> points = cs.getPoi();
-		//cs.getPoi();
 
-		//SHLocation l = new SHLocation(41.23430739, -81.2343922, 10);
-		//JSONArray jArray = cs.listContent(l);
-
-		//cs.download("droid.jpg");
-		//cs.upload("/mnt/sdcard/droid_img.bmp");
-		//cs.upload("/mnt/sdcard/index.txt");
 		initTracking();
 		initMapView();
 	}
@@ -81,7 +70,7 @@ public class SharedHereActivity extends MapActivity
 		locationCriteria = new Criteria();
 		locationCriteria.setAccuracy(Criteria.ACCURACY_COARSE);
 		locationProvider = locationManager.getBestProvider(locationCriteria, true);
-		locationCurrent = locationManager.getLastKnownLocation(locationProvider);
+		shCurrentLocation = new SHLocation(locationManager.getLastKnownLocation(locationProvider));
 
 		Log.d("initTracking", "bestprovider: "+locationProvider);
 
@@ -93,14 +82,15 @@ public class SharedHereActivity extends MapActivity
 
 				Log.d("initTracking", "location changed: lat="+lat+", lon="+lon);
 
-				locationCurrent = location;
+				shCurrentLocation.setLatitude(location.getLatitude());
+				shCurrentLocation.setLongitude(location.getLongitude());
 
 				shOverlay.clear();
-				shOverlay.addOverlay(new OverlayItem(new LatLonPoint(location.getLatitude(), location.getLongitude()),"Hey!","Stop poking me!!!"));
+				shOverlay.addOverlay(new OverlayItem(shCurrentLocation.toGeoPoint(), "Hey!","Stop poking me!!!"));
 				mapOverlays.clear();
 				mapOverlays.add(shOverlay);
 
-				mapController.animateTo(new LatLonPoint(location.getLatitude(), location.getLongitude()));
+				mapController.animateTo(shCurrentLocation.toGeoPoint());
 				mapView.invalidate();	
 
 				updateView();
@@ -142,12 +132,13 @@ public class SharedHereActivity extends MapActivity
 	public void onClickCheckHere(final View view) {	
 		List<SHLocation> locations = shConnection.getPoi();
 		for (SHLocation l: locations) {
-			Log.i("POI", "lat: " + l.getLatitude() + " lon:" + l.getLongitude());
+			Log.i("POI", l.toString());
 		}
 		
-		JSONArray jArray = shConnection.listContent(locationCurrent);
+		JSONArray jArray = shConnection.listContent(shCurrentLocation);
 		
 		//Intent i = new Intent(this, DownloadActivity.class);
+		//i.putExtra("SHLocation", shCurrentLocation);
 		//startActivity(i);
 	}
 
@@ -157,17 +148,17 @@ public class SharedHereActivity extends MapActivity
 	 * @param view
 	 */
 	public void onClickShareHere(final View view) {
-
-		//shConnection.download("droid.jpg");
+		//shConnection.download("droid.jpg", shCurrentLocation);
 
 		// Lars: testing upload
-		//shConnection.upload("/mnt/sdcard/dont_panic.jpg", locationCurrent.getLatitude(), locationCurrent.getLongitude(), "");
-		//shConnection.upload("/mnt/sdcard/ultimate_trick.jpg", locationCurrent.getLatitude(), locationCurrent.getLongitude(), "");
-		//shConnection.upload("/mnt/sdcard/bsdrest.gif", locationCurrent.getLatitude(), locationCurrent.getLongitude(), "");
-		//shConnection.upload("/mnt/sdcard/tia_logo_large.jpg", locationCurrent.getLatitude(), locationCurrent.getLongitude(), "");
-		//shConnection.upload("/mnt/sdcard/etmessage_nrao.gif", locationCurrent.getLatitude(), locationCurrent.getLongitude(), "");
+		//shConnection.upload("/mnt/sdcard/dont_panic.jpg", shCurrentLocation, "");
+		//shConnection.upload("/mnt/sdcard/ultimate_trick.jpg", shCurrentLocation, "");
+		//shConnection.upload("/mnt/sdcard/bsdrest.gif", shCurrentLocation, "");
+		//shConnection.upload("/mnt/sdcard/tia_logo_large.jpg", shCurrentLocation, "NOWHERE TO HIDE");
+		//shConnection.upload("/mnt/sdcard/etmessage_nrao.gif", shCurrentLocation, "");
 	
 		//Intent i = new Intent(this, UploadActivity.class);
+		//i.putExtra("SHLocation", shCurrentLocation);
 		//startActivity(i);
 	}
 
@@ -177,10 +168,10 @@ public class SharedHereActivity extends MapActivity
 	 * @author Lars Lindgren <chrono@eeky.net>
 	 */
 	public void updateView() {
-		if (locationCurrent != null) {
+		if (shCurrentLocation != null) {
 			final TextView valueView = (TextView) findViewById(R.id.textview_gps);
-			valueView.setText(Double.toString(locationCurrent.getLatitude()) + "," + Double.toString(locationCurrent.getLongitude()));    
-			mapController.setCenter(new LatLonPoint(locationCurrent.getLatitude(), locationCurrent.getLongitude()));
+			valueView.setText(shCurrentLocation.toString());    
+			mapController.setCenter(shCurrentLocation.toGeoPoint());
 		}
 	}
 }
