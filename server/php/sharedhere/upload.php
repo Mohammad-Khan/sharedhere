@@ -10,7 +10,7 @@ if (!isset($_POST['request_id']) &&
 	!isset($_POST['description']) && 
 	!isset($_FILES['sharedfile']['name']) &&
 	($request_type != REQUEST_DATA_UPLOAD) &&
-	($_FILES['sharedfile']['size'] < 0)) {
+	($_FILES['sharedfile']['size'] <= 0)) {
 	print("Please make sure all input parameters are correct");
 	exit;
 }
