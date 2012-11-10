@@ -3,13 +3,14 @@
 require_once('./Constants.php');
 require_once('./Functions.php');
 
+// sanity check
 if (!isset($_POST['request_id']) && 
 	!isset($_POST['latitude']) && 
 	!isset($_POST['longitude']) && 
 	!isset($_POST['description']) && 
 	!isset($_FILES['sharedfile']['name']) &&
 	($request_type != REQUEST_DATA_UPLOAD) &&
-	($_FILES['sharedfile']['size'] <= 0)) {
+	($_FILES['sharedfile']['size'] < 0)) {
 	print("Please make sure all input parameters are correct");
 	exit;
 }
@@ -18,8 +19,9 @@ $request_type = $_POST['request_id'];
 $latitude = sh_truncate($_POST['latitude'], ".", 4);
 $longitude = sh_truncate($_POST['longitude'], ".", 4);
 $description = $_POST['description'];
-
 $posted_file_name = $_FILES['sharedfile']['name'];
+$posted_file_size = $_FILES['sharedfile']['size'];
+
 $upload_dir = "content/$latitude/$longitude/";
 $upload_file_path = $upload_dir . basename($posted_file_name);
 
@@ -62,17 +64,18 @@ if ($location_id < 0) {
 }
 
 // insert info about file
-$query = 'INSERT INTO content(location_id, filename, timestamp, description) VALUES("' . $location_id . '","' . $posted_file_name . '","' . date('Y-m-d H:i:s') . '","' . $description . '")';
+$query = 'INSERT INTO content(location_id, filename, timestamp, size, description) VALUES("' . $location_id . '","' . $posted_file_name . '","' . date('Y-m-d H:i:s') . '","' . $posted_file_size . '","' . $description . '")';
 $mysql_result = mysql_query($query);
 if (!$mysql_result) {
 	print("MySQL Insert Query failed" . mysql_error());
 	exit;
 }
 
+// move file into place
 if (move_uploaded_file($_FILES['sharedfile']['tmp_name'], $upload_file_path)) {
-   	print ("Upload succeeded");
+   	print("Upload succeeded");
 } else {
-   	print ("File copy operation failed");
+   	print("File copy operation failed");
 }
 
 ?>

@@ -7,10 +7,11 @@ CREATE TABLE location (
 
 CREATE TABLE content (
         id INT PRIMARY KEY AUTO_INCREMENT,
-        filename VARCHAR(200),
+        filename VARCHAR(256),
         location_id INT,
         timestamp DATETIME,
-        description VARCHAR(200),
+        size NUMERIC,
+        description VARCHAR(256),
         FOREIGN KEY(location_id) REFERENCES location(id)
 );
 
@@ -19,5 +20,5 @@ CREATE TABLE log (
         op_type TINYINT, -- 0=poi, 1=down, 2=up
         client_id INT,
         timestmpa DATETIME,
-        query VARCHAR(500)
+        query VARCHAR(512)
 );
