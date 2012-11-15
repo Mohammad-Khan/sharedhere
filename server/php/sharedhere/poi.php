@@ -2,31 +2,28 @@
 
 require_once('Constants.php');
 
-	if (isset($_POST['request_id']) && $_POST['request_id'] != '') {
-		// Connect to MySQL DB
-		$conn = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
-		mysql_select_db(DB_NAME, $conn);
+if (!isset($_POST['request_id']) &&
+    ($_POST['request_id'] == REQUEST_POI_DOWNLOAD)) {
+    print("Please make sure all input parameters are correct");
+    exit;
+}
 
-		$output = array();
-		// Check for type of request
-		if ($_POST['request_id'] == REQUEST_POI_DOWNLOAD) {
-			$mysql_result = mysql_query('SELECT latitude,longitude FROM location');
+$conn = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
+mysql_select_db(DB_NAME, $conn);
+
+$output = array();
+
+$mysql_result = mysql_query('SELECT latitude,longitude FROM location');
 			
-			$i=0;
-			while($row = mysql_fetch_array($mysql_result)) {
-				$output[$i]['latitude'] = $row['latitude'];
-				$output[$i]['longitude'] = $row['longitude'];
-				$i++;
-			}
-		} else {
-			$output = 'Invalid Request';
-		}
+$i = 0;
+while($row = mysql_fetch_array($mysql_result)) {
+	$output[$i]['latitude'] = $row['latitude'];
+	$output[$i]['longitude'] = $row['longitude'];
+	$i++;
+}
 
-		print(json_encode($output));
+print(json_encode($output));
 					
-		mysql_close();
-	} else {
-		print('NoPOI');
-	}
+mysql_close();
 
 ?>
