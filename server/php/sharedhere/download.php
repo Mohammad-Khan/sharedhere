@@ -3,11 +3,11 @@
 require_once('./Constants.php');
 require_once('./Functions.php');
 
-if (!isset($_GET['request_id']) &&
-    !isset($_GET['filename']) &&
-    !isset($_GET['latitude']) &&
-    !isset($_GET['longitude']) &&
-    ($_GET['request_id'] == REQUEST_DATA_DOWNLOAD)) {
+if (!isset($_GET['request_id']) ||
+    !isset($_GET['filename']) ||
+    !isset($_GET['latitude']) ||
+    !isset($_GET['longitude']) ||
+    ($_GET['request_id'] != REQUEST_DATA_DOWNLOAD)) {
     print("Please make sure all input parameters are correct");
     exit;
 }

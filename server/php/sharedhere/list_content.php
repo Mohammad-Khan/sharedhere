@@ -3,10 +3,10 @@
 require_once('./Constants.php');
 require_once('./Functions.php');
 
-if (!isset($_POST['request_id']) &&
-	!isset($_POST['latitude']) &&
-	!isset($_POST['longitude']) &&
-	($_POST['request_id'] == REQUEST_DATA_LIST)) {
+if (!isset($_POST['request_id']) ||
+	!isset($_POST['latitude']) ||
+	!isset($_POST['longitude']) ||
+	($_POST['request_id'] != REQUEST_DATA_LIST)) {
 	print("Please make sure all input parameters are correct");
 	exit;
 }

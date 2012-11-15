@@ -2,8 +2,8 @@
 
 require_once('Constants.php');
 
-if (!isset($_POST['request_id']) &&
-    ($_POST['request_id'] == REQUEST_POI_DOWNLOAD)) {
+if (!isset($_POST['request_id']) ||
+    ($_POST['request_id'] != REQUEST_POI_DOWNLOAD)) {
     print("Please make sure all input parameters are correct");
     exit;
 }
