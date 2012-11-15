@@ -35,6 +35,7 @@ public class SHClientServer {
 	public static final int REQUEST_POI_DOWNLOAD = 	0;
 	public static final int REQUEST_DATA_UPLOAD = 	1;
 	public static final int REQUEST_DATA_DOWNLOAD =	2;
+	public static final int REQUEST_DATA_LIST = 3;
 	
 	private String serverAddress = null;
 
@@ -124,7 +125,7 @@ public class SHClientServer {
 	 * @return	List of available files with their details in a JSONArray
 	 */
 	public JSONArray listContent(SHLocation location) {
-		String serverPage = serverAddress + "download.php";
+		String serverPage = serverAddress + "list_content.php";
 		httpClient = new DefaultHttpClient();
 		httpPost = new HttpPost(serverPage);
 		
@@ -141,7 +142,7 @@ public class SHClientServer {
 		try {
 			List<NameValuePair> requestEntity = new ArrayList<NameValuePair>();
 			requestEntity.add(new BasicNameValuePair
-					("request_id", Integer.toString(REQUEST_POI_DOWNLOAD)));
+					("request_id", Integer.toString(REQUEST_DATA_LIST)));
 			requestEntity.add(new BasicNameValuePair
 					("latitude", Double.toString(location.getLatitude())));
 			requestEntity.add(new BasicNameValuePair
@@ -198,7 +199,10 @@ public class SHClientServer {
 	 * 
 	 */
 	public void download(String filename, SHLocation location) {
-		String serverFileLocation = serverAddress+"content/"+location.getLatitude()+"/"+location.getLongitude()+"/";
+		String serverFileLocation = serverAddress + "download.php?request_id="
+				+ String.valueOf(REQUEST_DATA_DOWNLOAD) + "&filename="
+				+ filename + "&latitude=" + location.getLatitude()
+				+ "&longitude=" + location.getLongitude();
 		File sdCardRoot = Environment.getExternalStorageDirectory();
 		try {
 		    //this is the file to be downloaded

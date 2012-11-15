@@ -9,7 +9,7 @@ require_once('./Functions.php');
 		mysql_select_db(DB_NAME, $conn);
 
 		// Check for type of request
-		if ($_POST['request_id'] == REQUEST_POI_DOWNLOAD) {
+		if ($_POST['request_id'] == REQUEST_DATA_LIST) {
 			$latitude = sh_truncate($_POST['latitude'], ".", 4);
 			$longitude = sh_truncate($_POST['longitude'], ".", 4);
 			//$location_subquery = "SELECT id FROM location WHERE latitude = $latitude AND longitude = $longitude"; 
