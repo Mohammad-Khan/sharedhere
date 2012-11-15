@@ -15,6 +15,7 @@ CREATE TABLE content (
 	description VARCHAR(256),
     timestamp DATETIME,
     filename VARCHAR(256),
+    size DECIMAL,
     location_id INT,
     FOREIGN KEY(location_id) REFERENCES location(id)
 );
