@@ -1,3 +1,9 @@
+-- DROP DATABASE IF EXISTS sharedhere;
+
+CREATE DATABASE sharedhere;
+
+USE sharedhere;
+
 CREATE TABLE location (
         id INT PRIMARY KEY AUTO_INCREMENT,
         latitude DECIMAL(6,4),
@@ -17,8 +23,8 @@ CREATE TABLE log (
     id INT PRIMARY KEY AUTO_INCREMENT,
     op_type ENUM('ContentInsert','ContentSelect','ContentDelete', 'LocationInsert','LocationSelect','LocationDelete'),
     timestamp DATETIME,
-    query VARCHAR(5000),
-    client_name VARCHAR(100)
+    query VARCHAR(4096),
+    client_name VARCHAR(128)
 );
 
 -- Trigger to log INSERT event on content table 
