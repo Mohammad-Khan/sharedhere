@@ -42,6 +42,7 @@ public class SHClientServer {
 	private HttpClient httpClient = null;
 	private HttpPost httpPost = null;
 	private HttpResponse httpResponse = null;
+	HttpEntity responseEntity = null;
 	
 	public SHClientServer (String server) {
 		this.serverAddress = server;
@@ -49,8 +50,6 @@ public class SHClientServer {
 	
 	/**
 	 * Request the server for "points of interest"
-	 * 
-	 * @author naser
 	 * 
 	 * @return List of GeoPoint objects
 	 */
@@ -61,7 +60,6 @@ public class SHClientServer {
 		List<SHLocation> locations = null;
 		JSONArray jsonArray = null;
 		JSONObject jsonObject = null;
-		HttpEntity responseEntity = null;
 		InputStream inputStream = null;
 		InputStreamReader inputStreamReader = null;
 		BufferedReader bufferedReader = null;
@@ -91,7 +89,6 @@ public class SHClientServer {
 			inputStream.close();
 			
 			result = stringBuilder.toString();
-			//Log.i("getPoi", "Result: "+result);
 			
 			jsonArray = new JSONArray(result);
 			locations = new ArrayList<SHLocation>();
@@ -119,8 +116,6 @@ public class SHClientServer {
 	/**
 	 * Lists the files that are available for a particular POI
 	 * 
-	 * @author naser
-	 *  
 	 * @param	poi	The point of Interest for which files available are desired
 	 * @return	List of available files with their details in a JSONArray
 	 */
@@ -129,7 +124,6 @@ public class SHClientServer {
 		httpClient = new DefaultHttpClient();
 		httpPost = new HttpPost(serverPage);
 		
-		HttpEntity responseEntity = null;
 		InputStream inputStream = null;
 		InputStreamReader inputStreamReader = null;
 		BufferedReader bufferedReader = null;
@@ -190,12 +184,10 @@ public class SHClientServer {
 	}
 	
 	/**
-	 * Download file
-	 * 
-	 * @author naser
+	 * Download file given the URL for the file.
+	 * It opens up a stream of bytes, read them into memory and saves the file locally.
 	 * 
 	 * @param filename to be downloaded
-	 * @return	
 	 * 
 	 */
 	public void download(String filename, SHLocation location) {
@@ -221,7 +213,6 @@ public class SHClientServer {
 		    while ( (bufferLength = inputStream.read(buffer)) > 0 ) {
 		            fileOutput.write(buffer, 0, bufferLength);
 		    }
-		    Log.i("DownloadInfo", "at: "+file.toString());
 		    fileOutput.close();
 
 		} catch (MalformedURLException e) {
@@ -232,20 +223,18 @@ public class SHClientServer {
 	}
 	
 	/**
-	 * Upload file
-	 * 
-	 * @author naser
+	 * Upload file to the server
+	 * Uses a multipart form and posts the file with meta data to the webserver.
+	 * The web server saves the file on file system and stores meta data into a database 
 	 * 
 	 * @param pathname - file to be upload
 	 * @param latitude - latitude associated with file
 	 * @param longitude - longitude associated with file
 	 * 
-	 * @return 
 	 */
-	public void upload(String pathname, SHLocation location, String description) {
+	public boolean upload(String pathname, SHLocation location, String description) {
 		String serverPage = serverAddress + "upload.php";
-		HttpClient httpclient = new DefaultHttpClient();
-		HttpEntity responseEntity = null;
+		httpClient = new DefaultHttpClient();
 		StringBody requestId=null;
 		MultipartEntity requestEntity = null;
 		FileBody inputFile = null;
@@ -254,7 +243,8 @@ public class SHClientServer {
 		BufferedReader bufferedReader = null;
 		StringBuilder stringBuilder = null;
 		String line = null;
-		String result = null;
+		String result;
+		int responseCode = 0;
 		
         try {
             httpPost = new HttpPost(serverPage);
@@ -270,14 +260,12 @@ public class SHClientServer {
             requestEntity.addPart("description", new StringBody(description));
             
             httpPost.setEntity(requestEntity);
-
-            Log.i("upload_info","executing request " + httpPost.getRequestLine());
-            httpResponse = httpclient.execute(httpPost);
-
+            httpResponse = httpClient.execute(httpPost);
             responseEntity = httpResponse.getEntity();
-            
-            Log.i("upload_info", responseEntity.toString());
-
+			
+            /* TODO The code below is unused now.
+             *  Use it to check if upload succeeded or not
+             */
 			inputStream = responseEntity.getContent();
 			inputStreamReader = new InputStreamReader(inputStream);
 			bufferedReader = new BufferedReader(inputStreamReader);
@@ -289,10 +277,14 @@ public class SHClientServer {
 			inputStream.close();
 			
 			result = stringBuilder.toString();
-			Log.i("upload_info", "Result: "+result);
          
         } catch (Exception e){
            Log.e("upload_error", e.getMessage());
-        }	
+        }
+        
+        responseCode = httpResponse.getStatusLine().getStatusCode();
+        if (responseCode == HttpURLConnection.HTTP_NO_CONTENT) return false;
+        
+        return true;
 	}
 }
