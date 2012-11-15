@@ -46,8 +46,8 @@ public class SharedHereActivity extends MapActivity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 
-		//shConnection = new SHClientServer(findViewById(R.string.server_address).toString());
-		shConnection = new SHClientServer("http://10.0.0.240/sharedhere/");
+		shConnection = new SHClientServer(getString(R.string.server_address));
+		
 
 		initTracking();
 		initMapView();
@@ -130,16 +130,10 @@ public class SharedHereActivity extends MapActivity
 	 * @param view
 	 */
 	public void onClickCheckHere(final View view) {	
-		List<SHLocation> locations = shConnection.getPoi();
-		for (SHLocation l: locations) {
-			Log.i("POI", l.toString());
-		}
-		
-		JSONArray jArray = shConnection.listContent(shCurrentLocation);
-		
-		//Intent i = new Intent(this, DownloadActivity.class);
-		//i.putExtra("SHLocation", shCurrentLocation);
-		//startActivity(i);
+				
+		Intent i = new Intent(this, DownloadActivity.class);
+		i.putExtra("SHLocation", shCurrentLocation);
+		startActivity(i);
 	}
 
 	/**
