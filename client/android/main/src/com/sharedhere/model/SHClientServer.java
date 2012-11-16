@@ -189,13 +189,13 @@ public class SHClientServer {
 	 * 
 	 * @param filename to be downloaded
 	 * 
+	 * @return true if download succeeds, false otherwise
 	 */
-	public void download(String filename, SHLocation location) {
+	public boolean download(String filename, SHLocation location) {
 		String serverFileLocation = serverAddress + "download.php?request_id="
 				+ String.valueOf(REQUEST_DATA_DOWNLOAD) + "&filename="
 				+ filename + "&latitude=" + location.getLatitude()
 				+ "&longitude=" + location.getLongitude();
-		//File sdCardRoot = Environment.getExternalStorageDirectory();
 		File downloadDirectory = new File("/mnt/sdcard/Download");
 		try {
 		    //this is the file to be downloaded
@@ -221,6 +221,12 @@ public class SHClientServer {
 		} catch (IOException e) {
 		    Log.e("download", e.getMessage());
 		}
+		
+		// Check if the to-be-downloaded file exists
+		if ((new File(downloadDirectory+"/"+filename)) == null) {
+			return false;
+		}
+		return true;
 	}
 	
 	/**
@@ -259,8 +265,6 @@ public class SHClientServer {
             requestEntity.addPart("request_id", requestId);
             requestEntity.addPart("latitude", new StringBody(String.valueOf(location.getLatitude())));
             requestEntity.addPart("longitude", new StringBody(String.valueOf(location.getLongitude())));
-            //requestEntity.addPart("latitude", new StringBody("41.9844"));
-            //requestEntity.addPart("longitude", new StringBody("-87.6557"));
             requestEntity.addPart("description", new StringBody(description));
             
             httpPost.setEntity(requestEntity);
