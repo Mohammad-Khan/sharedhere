@@ -8,6 +8,7 @@ if (!isset($_GET['request_id']) ||
     !isset($_GET['latitude']) ||
     !isset($_GET['longitude']) ||
     ($_GET['request_id'] != REQUEST_DATA_DOWNLOAD)) {
+	http_response_code(400); // Bad request
     print("Please make sure all input parameters are correct");
     exit;
 }
@@ -21,7 +22,8 @@ $file = CONTENT_DIR."/$latitude/$longitude/$filename";
 if (is_file($file)) {
 	readfile($file);
 } else {
-    print("No such file");
+	http_response_code(404); // Not Found
+	print("No such file");
 	exit;
 }
 

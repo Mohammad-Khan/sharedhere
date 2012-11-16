@@ -7,6 +7,7 @@ if (!isset($_POST['request_id']) ||
 	!isset($_POST['latitude']) ||
 	!isset($_POST['longitude']) ||
 	($_POST['request_id'] != REQUEST_DATA_LIST)) {
+	http_response_code(400); // Bad request
 	print("Please make sure all input parameters are correct");
 	exit;
 }
@@ -37,6 +38,9 @@ while($row = mysql_fetch_array($mysql_result)) {
 	$output[$i]['longitude'] = $row['longitude'];
 	$i++;
 }
+
+// If no data found set response code to "not found"
+if (count($output) == 0) http_response_code(404);
 
 print(json_encode($output));
 					
