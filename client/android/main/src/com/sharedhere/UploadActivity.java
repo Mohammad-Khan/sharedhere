@@ -48,9 +48,12 @@ public class UploadActivity extends ListActivity {
 			// and
 			// the return should be checked and the toast below be set
 			// accordingly
-			shConnection.upload(file.getAbsolutePath(), currentLocation,
-					"Is it a game, or is it real?");
-			Toast.makeText(this, "File uploaded", Toast.LENGTH_LONG).show();
+			boolean uploadStatus = shConnection.upload(file.getAbsolutePath(),
+					currentLocation, "Is it a game, or is it real?");
+			if (uploadStatus)
+				Toast.makeText(this, "File uploaded", Toast.LENGTH_LONG).show();
+			else
+				Toast.makeText(this, "Upload failed", Toast.LENGTH_LONG).show();
 		}
 	}
 
