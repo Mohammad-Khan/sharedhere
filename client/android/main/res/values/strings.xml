@@ -10,6 +10,5 @@
 	<string name="label_upload_button">Upload</string>
 	<string name="label_upload_cancel_button">Cancel</string>
 	
-	<string name="label_download_done_button">Done</string>
-	
+	<string name="label_download_done_button">Done</string>	
 </resources>

@@ -1,4 +1,4 @@
--- DROP DATABASE IF EXISTS sharedhere;
+DROP DATABASE IF EXISTS sharedhere;
 
 CREATE DATABASE sharedhere;
 

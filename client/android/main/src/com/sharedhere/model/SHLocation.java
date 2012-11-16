@@ -16,7 +16,7 @@ public class SHLocation implements Serializable {
 		this.latitude = location.getLatitude();
 		this.longitude = location.getLongitude();
 	}
-	
+
 	public SHLocation(double latitude, double longitude) {
 		this.latitude = latitude;
 		this.longitude = longitude;
@@ -39,10 +39,12 @@ public class SHLocation implements Serializable {
 	}
 
 	public final GeoPoint toGeoPoint() {
-		return new GeoPoint((int) (this.latitude * 1E6), (int) (this.longitude * 1E6));
+		return new GeoPoint((int) (this.latitude * 1E6),
+				(int) (this.longitude * 1E6));
 	}
-	
+
 	public String toString() {
-		return String.valueOf(this.latitude) + ", " + String.valueOf(this.longitude);
+		return String.valueOf(this.latitude) + ", "
+				+ String.valueOf(this.longitude);
 	}
 }

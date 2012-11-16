@@ -2,8 +2,6 @@ package com.sharedhere;
 
 import java.util.List;
 
-import org.json.JSONArray;
-
 import android.content.Context;
 import android.content.Intent;
 import android.location.Criteria;
@@ -20,7 +18,6 @@ import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
-
 import com.sharedhere.model.SHClientServer;
 import com.sharedhere.model.SHItemizedOverlay;
 import com.sharedhere.model.SHLocation;
@@ -48,7 +45,6 @@ public class SharedHereActivity extends MapActivity
 
 		shConnection = new SHClientServer(getString(R.string.server_address));
 		
-
 		initTracking();
 		initMapView();
 	}
@@ -129,8 +125,7 @@ public class SharedHereActivity extends MapActivity
 	 * 
 	 * @param view
 	 */
-	public void onClickCheckHere(final View view) {	
-				
+	public void onClickCheckHere(final View view) {				
 		Intent i = new Intent(this, DownloadActivity.class);
 		i.putExtra("SHLocation", shCurrentLocation);
 		startActivity(i);
@@ -142,15 +137,6 @@ public class SharedHereActivity extends MapActivity
 	 * @param view
 	 */
 	public void onClickShareHere(final View view) {
-		//shConnection.download("droid.jpg", shCurrentLocation);
-
-		// Lars: testing upload
-		//shConnection.upload("/mnt/sdcard/dont_panic.jpg", shCurrentLocation, "");
-		//shConnection.upload("/mnt/sdcard/ultimate_trick.jpg", shCurrentLocation, "");
-		//shConnection.upload("/mnt/sdcard/bsdrest.gif", shCurrentLocation, "");
-		//shConnection.upload("/mnt/sdcard/tia_logo_large.jpg", shCurrentLocation, "NOWHERE TO HIDE");
-		//shConnection.upload("/mnt/sdcard/etmessage_nrao.gif", shCurrentLocation, "");
-	
 		Intent i = new Intent(this, UploadActivity.class);
 		i.putExtra("SHLocation", shCurrentLocation);
 		startActivity(i);

@@ -1,10 +1,10 @@
 package com.sharedhere;
 
 import java.util.ArrayList;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
-import com.sharedhere.model.SHClientServer;
-import com.sharedhere.model.SHLocation;
+
 import android.app.ListActivity;
 import android.content.Context;
 import android.os.Bundle;
@@ -14,13 +14,16 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.sharedhere.model.SHClientServer;
+import com.sharedhere.model.SHLocation;
+
 /**
  * 
  * @author Zain
  *
  */
-public class DownloadActivity extends ListActivity {
-
+public class DownloadActivity extends ListActivity
+{
 	private SHLocation shCurrentLocation = null;
 	private SHClientServer shConnection = null;
 	JSONObject jsonObject = null;
@@ -29,7 +32,7 @@ public class DownloadActivity extends ListActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		// setContentView(R.layout.download);
+		//setContentView(R.layout.download);
 
 		shCurrentLocation = (SHLocation) getIntent().getSerializableExtra(
 				"SHLocation");
@@ -67,7 +70,6 @@ public class DownloadActivity extends ListActivity {
 	// OnClick checkhere button event,downloading file
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
-
 		String filename = l.getItemAtPosition(position).toString();
 		shConnection.download(filename, shCurrentLocation);
 
@@ -78,6 +80,5 @@ public class DownloadActivity extends ListActivity {
 
 		Toast toast = Toast.makeText(context, text, duration);
 		toast.show();
-
 	}
 }

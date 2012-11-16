@@ -43,7 +43,7 @@ public class SHItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 		mOverlays.add(overlay);
 		populate();
 	}
-	
+
 	public void clear() {
 		mOverlays.clear();
 	}
