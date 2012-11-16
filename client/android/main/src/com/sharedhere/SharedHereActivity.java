@@ -151,9 +151,9 @@ public class SharedHereActivity extends MapActivity
 		//shConnection.upload("/mnt/sdcard/tia_logo_large.jpg", shCurrentLocation, "NOWHERE TO HIDE");
 		//shConnection.upload("/mnt/sdcard/etmessage_nrao.gif", shCurrentLocation, "");
 	
-		//Intent i = new Intent(this, UploadActivity.class);
-		//i.putExtra("SHLocation", shCurrentLocation);
-		//startActivity(i);
+		Intent i = new Intent(this, UploadActivity.class);
+		i.putExtra("SHLocation", shCurrentLocation);
+		startActivity(i);
 	}
 
 	/**

@@ -231,6 +231,7 @@ public class SHClientServer {
 	 * @param latitude - latitude associated with file
 	 * @param longitude - longitude associated with file
 	 * 
+	 * @return true if upload completed successfully, false otherwise
 	 */
 	public boolean upload(String pathname, SHLocation location, String description) {
 		String serverPage = serverAddress + "upload.php";
@@ -257,6 +258,8 @@ public class SHClientServer {
             requestEntity.addPart("request_id", requestId);
             requestEntity.addPart("latitude", new StringBody(String.valueOf(location.getLatitude())));
             requestEntity.addPart("longitude", new StringBody(String.valueOf(location.getLongitude())));
+            //requestEntity.addPart("latitude", new StringBody("41.9844"));
+            //requestEntity.addPart("longitude", new StringBody("-87.6557"));
             requestEntity.addPart("description", new StringBody(description));
             
             httpPost.setEntity(requestEntity);
