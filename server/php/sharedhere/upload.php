@@ -8,7 +8,7 @@ if (!isset($_POST['request_id']) ||
 	!isset($_POST['longitude']) ||
 	!isset($_POST['description']) ||
 	!isset($_FILES['sharedfile']['name']) ||
-	($_POST['request_id'] == REQUEST_DATA_UPLOAD) ||
+	($_POST['request_id'] != REQUEST_DATA_UPLOAD) ||
 	($_FILES['sharedfile']['size'] <= 0)) {
 	print("Please make sure all input parameters are correct");
 	exit;
