@@ -5,8 +5,11 @@ import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -27,6 +30,7 @@ public class DownloadActivity extends ListActivity
 	private SHLocation shCurrentLocation = null;
 	private SHClientServer shConnection = null;
 	JSONObject jsonObject = null;
+	JSONArray jArray = null;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -34,15 +38,27 @@ public class DownloadActivity extends ListActivity
 		super.onCreate(savedInstanceState);
 		//setContentView(R.layout.download);
 
-		shCurrentLocation = (SHLocation) getIntent().getSerializableExtra(
-				"SHLocation");
+		shCurrentLocation = (SHLocation) getIntent().getSerializableExtra("SHLocation");
 
 		shConnection = new SHClientServer(getString(R.string.server_address));
 
 		// Content available at current location returned from Client-Server
 		// activity
-		JSONArray jArray = shConnection.listContent(shCurrentLocation);
-
+		jArray = shConnection.listContent(shCurrentLocation);
+		
+		// If no records available at this location show a message and exit activity
+		if(jArray == null || jArray.length()==0) {
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage("No files available for your current location");
+			builder.setPositiveButton("OK", new OnClickListener() {	
+				public void onClick(DialogInterface dialog, int which) {
+					DownloadActivity.this.finish();
+				}
+			});
+			AlertDialog dialog = builder.create();
+			dialog.show();
+		}
+		
 		ArrayList<String> filenames = new ArrayList<String>();
 
 		// Parsing the JSON array
