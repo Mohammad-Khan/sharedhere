@@ -49,7 +49,7 @@ public class DownloadActivity extends ListActivity
 		// If no records available at this location show a message and exit activity
 		if(jArray == null || jArray.length()==0) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setMessage("No files available for your current location");
+			builder.setMessage("No files here!");
 			builder.setPositiveButton("OK", new OnClickListener() {	
 				public void onClick(DialogInterface dialog, int which) {
 					DownloadActivity.this.finish();

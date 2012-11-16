@@ -195,7 +195,8 @@ public class SHClientServer {
 				+ String.valueOf(REQUEST_DATA_DOWNLOAD) + "&filename="
 				+ filename + "&latitude=" + location.getLatitude()
 				+ "&longitude=" + location.getLongitude();
-		File sdCardRoot = Environment.getExternalStorageDirectory();
+		//File sdCardRoot = Environment.getExternalStorageDirectory();
+		File downloadDirectory = new File("/mnt/sdcard/Download");
 		try {
 		    //this is the file to be downloaded
 		    URL url = new URL(serverFileLocation+filename);
@@ -204,10 +205,10 @@ public class SHClientServer {
 		    urlConnection.setDoOutput(true);
 		    urlConnection.connect();
 
-		    File file = new File(sdCardRoot, filename);
+		    File file = new File(downloadDirectory, filename);
 		    FileOutputStream fileOutput = new FileOutputStream(file);
 		    InputStream inputStream = urlConnection.getInputStream();
-
+		    
 		    byte[] buffer = new byte[1024];
 		    int bufferLength = 0;
 		    while ( (bufferLength = inputStream.read(buffer)) > 0 ) {
@@ -218,7 +219,7 @@ public class SHClientServer {
 		} catch (MalformedURLException e) {
 		    Log.e("download", e.getMessage());
 		} catch (IOException e) {
-		    Log.e("SH_download", e.getMessage());
+		    Log.e("download", e.getMessage());
 		}
 	}
 	
