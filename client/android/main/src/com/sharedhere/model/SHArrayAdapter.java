@@ -1,5 +1,5 @@
 package com.sharedhere.model;
-
+//Getting the current file
 import java.io.File;
 
 import com.sharedhere.R;
