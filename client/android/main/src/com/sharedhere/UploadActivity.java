@@ -2,10 +2,15 @@ package com.sharedhere;
 
 import java.io.File;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.entity.mime.MultipartEntity;
+
 import android.app.ListActivity;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sharedhere.model.SHArrayAdapter;
@@ -41,19 +46,13 @@ public class UploadActivity extends ListActivity {
 			parentDirectory = file.getParentFile() == null ? new File(
 					ROOT_DIRECTORY) : file.getParentFile();
 			processDirectory();
-		} else {
-			serverAddress = getString(R.string.server_address);
-			SHClientServer shConnection = new SHClientServer(serverAddress);
-			// TODO CleintServer.download should return/throw boolean/exception
-			// and
-			// the return should be checked and the toast below be set
-			// accordingly
-			boolean uploadStatus = shConnection.upload(file.getAbsolutePath(),
-					currentLocation, "Is it a game, or is it real?");
-			if (uploadStatus)
-				Toast.makeText(this, "File uploaded", Toast.LENGTH_LONG).show();
-			else
-				Toast.makeText(this, "Upload failed", Toast.LENGTH_LONG).show();
+		} else {	
+			//Changed this part of the method completely to be asynchronous. This way no Network I/O is on the main form
+			//VN & SH
+			UploadTask task = new UploadTask();
+			String fileName = file.getAbsolutePath();
+			String description = "Is it a game, or is it real? It's probably real.";
+			task.execute(fileName, description);
 		}
 	}
 
@@ -66,4 +65,35 @@ public class UploadActivity extends ListActivity {
 		SHArrayAdapter adapter = new SHArrayAdapter(this, files);
 		setListAdapter(adapter);
 	}
+	
+	
+	private class UploadTask extends AsyncTask<String, Void, Boolean> {
+    	@Override
+    	protected Boolean doInBackground(String... params) {
+			try {
+				String filePath = params[0];
+				String description = params[1];
+				serverAddress = getString(R.string.server_address);
+				SHClientServer shConnection = new SHClientServer(serverAddress);
+				return shConnection.upload(filePath, currentLocation, description);
+				
+			} catch (Exception e) {
+				return false;
+			}
+    	}
+    	
+    	@Override
+    	protected void onPostExecute(Boolean result){
+        	try	{
+        		if (result)
+    				Toast.makeText(UploadActivity.this, "File uploaded", Toast.LENGTH_LONG).show();
+    			else
+    				Toast.makeText(UploadActivity.this, "Upload failed", Toast.LENGTH_LONG).show();
+        	}
+        	catch (Exception ex){
+        		System.out.println("Broken");
+        	}
+    	}
+     }
+	 
 }

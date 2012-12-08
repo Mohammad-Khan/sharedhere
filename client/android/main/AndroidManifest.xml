@@ -3,11 +3,14 @@
       package="com.sharedhere"
       android:versionCode="1"
       android:versionName="1.0">
+    <uses-sdk android:minSdkVersion="11"
+            android:targetSdkVersion="15" />
+         
     <application android:label="@string/app_name" android:icon="@drawable/ic_launcher">
         <uses-library android:name="com.google.android.maps" />
         <activity android:name=".SharedHereActivity"
                   android:label="@string/app_name"
-                  android:theme="@android:style/Theme.NoTitleBar" >
+                  android:theme="@android:style/Theme.Holo" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -15,10 +18,12 @@
         </activity>
         <activity
             android:name=".DownloadActivity"
-            android:theme="@android:style/Theme.NoTitleBar" />
+            android:parentActivityName=".Main"
+            android:theme="@android:style/Theme.Holo" />
         <activity
             android:name=".UploadActivity"
-            android:theme="@android:style/Theme.NoTitleBar" />
+            android:parentActivityName=".Main"
+            android:theme="@android:style/Theme.Holo" />
     </application>
   	<uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />

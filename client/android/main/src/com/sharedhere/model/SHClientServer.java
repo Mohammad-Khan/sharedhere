@@ -28,8 +28,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
 public class SHClientServer {
 	public static final int REQUEST_POI_DOWNLOAD = 	0;
@@ -218,8 +221,10 @@ public class SHClientServer {
 
 		} catch (MalformedURLException e) {
 		    Log.e("download", e.getMessage());
+		    return false; //added by SH to avoid unhandled exceptions below
 		} catch (IOException e) {
 		    Log.e("download", e.getMessage());
+		    return false; //added by SH to avoid unhandled exceptions below
 		}
 		
 		// Check if the to-be-downloaded file exists
@@ -288,11 +293,13 @@ public class SHClientServer {
          
         } catch (Exception e){
            Log.e("upload_error", e.getMessage());
+           return false; //added by SH to avoid unhandled exceptions
         }
         
         responseCode = httpResponse.getStatusLine().getStatusCode();
-        if (responseCode == HttpURLConnection.HTTP_NO_CONTENT) return false;
-        
+        if (responseCode == HttpURLConnection.HTTP_NO_CONTENT) return false;       
         return true;
 	}
+	 
+	    
 }
