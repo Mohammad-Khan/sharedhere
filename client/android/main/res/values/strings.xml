@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">SharedHere</string>
-    
     <string name="server_address">http://sharedhere.net23.net/sharedhere/</string>
-    
-	<string name="label_checkhere_button">Check Here!</string>
-	<string name="label_sharehere_button">Share Here!</string>
-	
-	<string name="label_upload_button">Upload</string>
-	<string name="label_upload_cancel_button">Cancel</string>
-	
-	<string name="label_download_done_button">Done</string>	
+    <string name="label_checkhere_button">Check Here!</string>
+    <string name="label_sharehere_button">Share Here!</string>
+    <string name="label_upload_button">Upload</string>
+    <string name="label_upload_cancel_button">Cancel</string>
+    <string name="label_download_done_button">Done</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_location_selection">LocationSelectionActivity</string>
+	<string name="label_use_current_directory_button">Use This Folder</string>
+    <string name="label_create_new_folder">Create Folder</string>
 </resources>

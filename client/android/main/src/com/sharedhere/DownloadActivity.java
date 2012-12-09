@@ -37,8 +37,7 @@ public class DownloadActivity extends ListActivity
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//setContentView(R.layout.download);
-
+		
 		ListContentTask task = new ListContentTask();
 		task.execute();
 	}
@@ -49,15 +48,6 @@ public class DownloadActivity extends ListActivity
 		String filename = l.getItemAtPosition(position).toString();
 		DownloadTask task = new DownloadTask();
 		task.execute(filename);
-//		shConnection.download(filename, shCurrentLocation);
-//
-//		// Displaying a toast message
-//		Context context = getApplicationContext();
-//		CharSequence text = "Finished Downloading!";
-//		int duration = Toast.LENGTH_SHORT;
-//
-//		Toast toast = Toast.makeText(context, text, duration);
-//		toast.show();
 	}
 	
 	private class DownloadTask extends AsyncTask<String, Void, Boolean>{
