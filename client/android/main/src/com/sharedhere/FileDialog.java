@@ -5,11 +5,13 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -44,6 +46,9 @@ public class FileDialog extends Activity {
         return true;
     }
 
+    public void onListItemClick(ListView l, View v, int position, long id) {
+  
+    }
     
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -67,10 +72,19 @@ public class FileDialog extends Activity {
 				filteredData.add(f);
 			}
 		}		
-		File[] adapterData = (File[])filteredData.toArray();
+		File[] adapterData = filteredData.toArray(new File[filteredData.size()]);
 		SHArrayAdapter adapter = new SHArrayAdapter(this, adapterData);
 		ListView lv = (ListView)findViewById(R.id.listViewFileStructure); 
 	    lv.setAdapter(adapter);
+	}
+	
+	/**
+	 * Handles clicks from "Use Current Button" button
+	 * 
+	 * @param view
+	 */
+	public void onClickUseCurrentFolder(final View view) {				
+		
 	}
 	
 	private class DownloadTask extends AsyncTask<String, Void, Boolean>{

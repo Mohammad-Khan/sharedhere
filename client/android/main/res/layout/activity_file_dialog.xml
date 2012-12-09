@@ -17,6 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
+        android:onClick="onClickUseCurrentFolder"
         android:text="@string/label_use_current_directory_button" />
 	
     <ListView
@@ -24,6 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/btnCreateNewFolder"
+        android:onClick="onClickFileStructure"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true" >
     </ListView>
