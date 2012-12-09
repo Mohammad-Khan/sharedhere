@@ -10,6 +10,7 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -46,27 +47,16 @@ public class DownloadActivity extends ListActivity
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		String filename = l.getItemAtPosition(position).toString();
-		DownloadTask task = new DownloadTask();
-		task.execute(filename);
+		//DownloadTask task = new DownloadTask();
+		
+		//task.execute(filename);
+		
+		Intent i = new Intent(this, FileDialog.class);
+		i.putExtra("filename", filename);
+		i.putExtra("SHLocation", shCurrentLocation);
+		startActivity(i);
 	}
 	
-	private class DownloadTask extends AsyncTask<String, Void, Boolean>{
-
-		@Override
-		protected Boolean doInBackground(String... params) {
-			String filename = params[0];
-			return shConnection.download(filename, shCurrentLocation);			
-		}
-	 	@Override
-    	protected void onPostExecute(Boolean b){
-			Context context = getApplicationContext();
-			CharSequence text = "Finished Downloading!";
-			int duration = Toast.LENGTH_SHORT;
-
-			Toast toast = Toast.makeText(context, text, duration);
-			toast.show();
-	 	}
-	}
 	
 	private class ListContentTask extends AsyncTask<Void, Void, String[]> {
     	@Override
