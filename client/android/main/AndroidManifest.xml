@@ -32,7 +32,7 @@
             android:parentActivityName=".Main"
             android:theme="@android:style/Theme.Holo" />
         <activity
-            android:name=".LocationSelectionActivity"
+            android:name=".FileDialog"
             android:label="@string/title_activity_location_selection" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
