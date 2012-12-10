@@ -60,9 +60,16 @@ public class UploadActivity extends ListActivity {
 	 * Processes the current directory Assigns the content of current directory
 	 * to the upload array adapter
 	 */
-	private void processDirectory() {
-		File[] files = currentDirectory.listFiles();
-		SHArrayAdapter adapter = new SHArrayAdapter(this, files);
+	private void processDirectory() {		
+		File[] files = currentDirectory.listFiles(); 
+				
+		File[] displayContent= new File[currentDirectory.listFiles().length + 1];
+		displayContent[0] = parentDirectory; // add the parent directory as the first element in the array.
+		for (int i = 0; i < files.length;i++){ //create the display content array with the rest of the file data in the current directory.
+			displayContent[i+1] = files[i];
+		}
+		
+		SHArrayAdapter adapter = new SHArrayAdapter(this, displayContent);
 		setListAdapter(adapter);
 	}
 	

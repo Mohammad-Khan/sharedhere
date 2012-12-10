@@ -32,7 +32,11 @@ public class SHArrayAdapter extends ArrayAdapter<File> {
 		TextView textView = (TextView) rowView.findViewById(R.id.label);
 		ImageView imageView = (ImageView) rowView.findViewById(R.id.icon_file);
 		
-		textView.setText(files[position].getName());
+		if (position == 0){
+			textView.setText("...Go Up");
+		}
+		else			
+			textView.setText(files[position].getName());
 		
 		// Get the current file
 		File f = files[position];

@@ -1,47 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.sharedhere"
-    android:versionCode="1"
-    android:versionName="1.0" >
-
-    <uses-sdk
-        android:minSdkVersion="11"
-        android:targetSdkVersion="15" />
-
-    <application
-        android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name" >
+      package="com.sharedhere"
+      android:versionCode="1"
+      android:versionName="1.0">
+    <uses-sdk android:minSdkVersion="11"
+            android:targetSdkVersion="15" />
+         
+    <application android:label="@string/app_name" android:icon="@drawable/ic_launcher">
         <uses-library android:name="com.google.android.maps" />
-
-        <activity
-            android:name=".SharedHereActivity"
-            android:label="@string/app_name"
-            android:theme="@android:style/Theme.Holo" >
+        <activity android:name=".SharedHereActivity"
+                  android:label="@string/app_name"
+                  android:theme="@android:style/Theme.NoTitleBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".DownloadActivity"
-            android:parentActivityName=".Main"
+            android:parentActivityName=".SharedHereActivity"
             android:theme="@android:style/Theme.Holo" />
         <activity
             android:name=".UploadActivity"
-            android:parentActivityName=".Main"
+            android:parentActivityName=".SharedHereActivity"
             android:theme="@android:style/Theme.Holo" />
         <activity
             android:name=".FileDialog"
-            android:label="@string/title_activity_location_selection" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.sharedhere.DownloadActivity" />
-        </activity>
+            android:parentActivityName=".SharedHereActivity"
+            android:theme="@android:style/Theme.Holo" />        
     </application>
-
-    <uses-permission android:name="android.permission.INTERNET" />
+  	<uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
+  	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 </manifest>

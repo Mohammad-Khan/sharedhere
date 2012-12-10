@@ -12,8 +12,10 @@ import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 
 import com.sharedhere.model.SHArrayAdapter;
 import com.sharedhere.model.SHClientServer;
@@ -25,6 +27,7 @@ public class FileDialog extends Activity {
 	private SHLocation shCurrentLocation = null;
 	private SHClientServer shConnection = null;
 	private String serverAddress = null;
+	private String fileName = null;
 	static final String ROOT_DIRECTORY = "/mnt/sdcard";
 	
     @Override
@@ -36,20 +39,18 @@ public class FileDialog extends Activity {
     	// Set current and parent directories to root (initially)
 		currentDirectory = new File(ROOT_DIRECTORY);
 		parentDirectory = currentDirectory;
+		shCurrentLocation = (SHLocation) getIntent().getSerializableExtra("SHLocation");
+		fileName = (String)getIntent().getStringExtra("FileName");
 		// Process the root directory
-		processDirectory();
+		processDirectory();		
     }
-
+           
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_location_selection, menu);
         return true;
     }
 
-    public void onListItemClick(ListView l, View v, int position, long id) {
-  
-    }
-    
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -67,6 +68,7 @@ public class FileDialog extends Activity {
 	private void processDirectory() {
 		File[] files = currentDirectory.listFiles();
 		ArrayList<File> filteredData = new ArrayList<File>();
+		filteredData.add(parentDirectory);//add the parent directory as the first element in the array for navigation
 		for(File f:files){
 			if (f.isDirectory()){
 				filteredData.add(f);
@@ -74,8 +76,20 @@ public class FileDialog extends Activity {
 		}		
 		File[] adapterData = filteredData.toArray(new File[filteredData.size()]);
 		SHArrayAdapter adapter = new SHArrayAdapter(this, adapterData);
-		ListView lv = (ListView)findViewById(R.id.listViewFileStructure); 
+		final ListView lv = (ListView)findViewById(R.id.listViewFileStructure);
+		
 	    lv.setAdapter(adapter);
+	    lv.setOnItemClickListener(new OnItemClickListener() {
+
+			public void onItemClick(AdapterView<?> listView, View v,  int position, long id) {
+				File file = (File)lv.getItemAtPosition(position);
+				currentDirectory = file;
+				parentDirectory = file.getParentFile() == null ? new File(
+						ROOT_DIRECTORY) : file.getParentFile();
+				processDirectory();			
+			}
+		});
+	    
 	}
 	
 	/**
@@ -83,16 +97,19 @@ public class FileDialog extends Activity {
 	 * 
 	 * @param view
 	 */
-	public void onClickUseCurrentFolder(final View view) {				
-		
+	public void onClickUseCurrentFolder(final View view) {	
+		String path = currentDirectory.getAbsolutePath();
+		DownloadTask task = new DownloadTask();
+		task.execute(path);
 	}
 	
 	private class DownloadTask extends AsyncTask<String, Void, Boolean>{
 
 		@Override
 		protected Boolean doInBackground(String... params) {
-			String filename = params[0];
-			return shConnection.download(filename, shCurrentLocation);			
+			String path = params[0];
+			shConnection = new SHClientServer(getString(R.string.server_address));		
+			return shConnection.download(fileName, shCurrentLocation, path);			
 		}
 	 	@Override
     	protected void onPostExecute(Boolean b){

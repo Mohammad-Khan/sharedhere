@@ -17,7 +17,7 @@
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="1.00"
-        android:apiKey="0O9BefRdXka__wWe5_EOKe7PXTQs51p7kEYVqhA"
+        android:apiKey="0O9BefRdXka_qbGsgwus4RaQOfeRWPcO1D7pFLA"
         android:clickable="true"
         android:enabled="true" />
 

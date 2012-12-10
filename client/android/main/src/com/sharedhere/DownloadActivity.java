@@ -7,18 +7,18 @@ import org.json.JSONObject;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.sharedhere.model.SHClientServer;
+import com.sharedhere.model.SHFileInfo;
 import com.sharedhere.model.SHLocation;
 
 /**
@@ -45,32 +45,21 @@ public class DownloadActivity extends ListActivity
 	// OnClick checkhere button event,downloading file
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
-		String filename = l.getItemAtPosition(position).toString();
-		DownloadTask task = new DownloadTask();
-		task.execute(filename);
+		
+        SHFileInfo fileInfo = (SHFileInfo)l.getItemAtPosition(position);
+        String filename = fileInfo.GetName();
+//		DownloadTask task = new DownloadTask();
+//		task.execute(filename);
+		Intent i = new Intent(this, FileDialog.class);
+		i.putExtra("SHLocation", shCurrentLocation);
+		i.putExtra("FileName", filename);
+		startActivity(i);
 	}
 	
-	private class DownloadTask extends AsyncTask<String, Void, Boolean>{
-
-		@Override
-		protected Boolean doInBackground(String... params) {
-			String filename = params[0];
-			return shConnection.download(filename, shCurrentLocation);			
-		}
-	 	@Override
-    	protected void onPostExecute(Boolean b){
-			Context context = getApplicationContext();
-			CharSequence text = "Finished Downloading!";
-			int duration = Toast.LENGTH_SHORT;
-
-			Toast toast = Toast.makeText(context, text, duration);
-			toast.show();
-	 	}
-	}
 	
-	private class ListContentTask extends AsyncTask<Void, Void, String[]> {
+	private class ListContentTask extends AsyncTask<Void, Void, SHFileInfo[]> {
     	@Override
-    	protected String[] doInBackground(Void... arg) {
+    	protected SHFileInfo[] doInBackground(Void... arg) {
 			try {
 
 				shCurrentLocation = (SHLocation) getIntent().getSerializableExtra("SHLocation");
@@ -81,38 +70,39 @@ public class DownloadActivity extends ListActivity
 				// activity
 				jArray = shConnection.listContent(shCurrentLocation);
 							
-				ArrayList<String> fileInformation = new ArrayList<String>();
+				ArrayList<SHFileInfo> fileInformation = new ArrayList<SHFileInfo>();
 				// Parsing the JSON array
 				try {
 
 					for (int i = 0; i < jArray.length(); i++) {
 						jsonObject = jArray.getJSONObject(i);
 						String filename = (String) jsonObject.getString("filename");
-						String size = (String)jsonObject.getString("size");
+						Long size = Long.decode(jsonObject.getString("size"));
 						String description = (String)jsonObject.getString("description");
-						String latitude = (String)jsonObject.getString("latitude");
-						String longitude = (String)jsonObject.getString("longitude");
+						Double latitude = Double.valueOf(jsonObject.getString("latitude"));
+						Double longitude = Double.valueOf(jsonObject.getString("longitude"));
 						
-						String displayString = String.format("File Name: %s\nSize: %s KB\nDesc: %s", filename, size, description);
-						//TODO Change this to use SHFileInfo objects						
-						fileInformation.add(displayString);
-						Log.d("filename", displayString);
+						//String displayString = String.format("File Name: %s\nSize: %s KB\nDesc: %s", filename, size, description);
+						SHFileInfo fileInfo = new SHFileInfo(size, filename, description, latitude, longitude );
+												
+						fileInformation.add(fileInfo);
+						Log.d("filename", fileInfo.toString());
 
 					}
-					String[] fnames = new String[fileInformation.size()];
+					SHFileInfo[] fnames = new SHFileInfo[fileInformation.size()];
 					return fileInformation.toArray(fnames);
 				
 				} catch (Exception e) {
-					return new String[0];
+					return new SHFileInfo[0];
 				}
 			}
 			catch (Exception e){
-				return new String[0];
+				return new SHFileInfo[0];
 			}
     	}
     	
     	@Override
-    	protected void onPostExecute(String[] result){
+    	protected void onPostExecute(SHFileInfo[] result){
 			// If no records available at this location show a message and exit activity
 			if(result.length==0) {
 				AlertDialog.Builder builder = new AlertDialog.Builder(DownloadActivity.this);
@@ -125,7 +115,7 @@ public class DownloadActivity extends ListActivity
 				AlertDialog dialog = builder.create();
 				dialog.show();
 			}else{							
-				ArrayAdapter<String> mArrayAdapter = new ArrayAdapter<String>(DownloadActivity.this,
+				ArrayAdapter<SHFileInfo> mArrayAdapter = new ArrayAdapter<SHFileInfo>(DownloadActivity.this,
 						android.R.layout.simple_expandable_list_item_1, result);
 				setListAdapter(mArrayAdapter);
 			}

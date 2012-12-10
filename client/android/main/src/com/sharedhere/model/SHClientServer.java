@@ -191,15 +191,16 @@ public class SHClientServer {
 	 * It opens up a stream of bytes, read them into memory and saves the file locally.
 	 * 
 	 * @param filename to be downloaded
-	 * 
+	 * @param path the path to download the file to
 	 * @return true if download succeeds, false otherwise
 	 */
-	public boolean download(String filename, SHLocation location) {
+	public boolean download(String filename, SHLocation location, String path) {
 		String serverFileLocation = serverAddress + "download.php?request_id="
 				+ String.valueOf(REQUEST_DATA_DOWNLOAD) + "&filename="
 				+ filename + "&latitude=" + location.getLatitude()
 				+ "&longitude=" + location.getLongitude();
-		File downloadDirectory = new File("/mnt/sdcard/Download");
+		//File downloadDirectory = new File("/mnt/sdcard/Download");
+		File downloadDirectory = new File(path);
 		try {
 		    //this is the file to be downloaded
 		    URL url = new URL(serverFileLocation+filename);
