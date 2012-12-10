@@ -13,13 +13,21 @@ public class SHLocation implements Serializable {
 	private double longitude;
 
 	public SHLocation(Location location) {
-		this.latitude = location.getLatitude();
-		this.longitude = location.getLongitude();
+		//this.latitude = location.getLatitude();
+		//this.longitude = location.getLongitude();
+		//Hardcoded location value below. Remove the comments on the two lines above this line and delete the next two lines to remove hardcoded location values. -- Cooper
+		this.latitude = 44.4444;
+		this.longitude = 8.8888;
+		
+		
 	}
 
 	public SHLocation(double latitude, double longitude) {
-		this.latitude = latitude;
-		this.longitude = longitude;
+		//this.latitude = latitude;
+		//this.longitude = longitude;
+		//Hardcoded location value below. Remove the comments on the two lines above this line and delete the next two lines to remove hardcoded location values. -- Cooper
+		this.latitude = 44.4444;
+		this.longitude = 8.8888;
 	}
 
 	public double getLatitude() {

@@ -6,6 +6,6 @@
 	define('DB_HOST', 'localhost');
 	define('DB_NAME', 'sharedhere');
 	define('DB_USER', 'root');
-	define('DB_PASSWORD', '');
-	define('CONTENT_DIR', 'content');
+	define('DB_PASSWORD', 'root');
+	define('CONTENT_DIR', 'content/');
 ?>

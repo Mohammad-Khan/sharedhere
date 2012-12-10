@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">SharedHere</string>
     
-    <string name="server_address">http://sharedhere.net23.net/sharedhere/</string>
+    <string name="server_address">http://10.0.2.2/sharedhere/server/php/sharedhere/</string>
     
 	<string name="label_checkhere_button">Check Here!</string>
 	<string name="label_sharehere_button">Share Here!</string>

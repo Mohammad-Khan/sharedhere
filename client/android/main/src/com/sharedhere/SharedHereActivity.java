@@ -33,6 +33,7 @@ public class SharedHereActivity extends MapActivity
 	private String locationProvider = null;
 	private Criteria locationCriteria = null;
 
+	@SuppressWarnings("unused")
 	private SHClientServer shConnection = null;
 	private SHItemizedOverlay shOverlay = null;
 	private SHLocation shCurrentLocation = null;
@@ -42,8 +43,11 @@ public class SharedHereActivity extends MapActivity
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+		
+		System.out.println(getString(R.string.server_address));
 
 		shConnection = new SHClientServer(getString(R.string.server_address));
+		
 		
 		initTracking();
 		initMapView();
@@ -66,15 +70,22 @@ public class SharedHereActivity extends MapActivity
 		locationCriteria = new Criteria();
 		locationCriteria.setAccuracy(Criteria.ACCURACY_COARSE);
 		locationProvider = locationManager.getBestProvider(locationCriteria, true);
+		
 		shCurrentLocation = new SHLocation(locationManager.getLastKnownLocation(locationProvider));
-
+		
 		Log.d("initTracking", "bestprovider: "+locationProvider);
 
 		if (locationListener == null)
 			locationListener = new LocationListener() {
 			public void onLocationChanged(Location location) {
-				String lat = String.valueOf(location.getLatitude());
-				String lon = String.valueOf(location.getLongitude());
+				
+			//	String lat = String.valueOf(location.getLatitude());
+			//	String lon = String.valueOf(location.getLongitude());
+				
+			//  Hardcoded location values were used for testing purposes. Remove the comments on the previous two lines and remove the next two lines to fix this. -- Cooper
+					
+				String lat = String.valueOf(44.44444); 
+				String lon = String.valueOf(8.88888);
 
 				Log.d("initTracking", "location changed: lat="+lat+", lon="+lon);
 
@@ -154,4 +165,6 @@ public class SharedHereActivity extends MapActivity
 			mapController.setCenter(shCurrentLocation.toGeoPoint());
 		}
 	}
+
+
 }

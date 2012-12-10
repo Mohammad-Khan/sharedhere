@@ -17,10 +17,12 @@
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="1.00"
-        android:apiKey="0Tjjb_5Vj7Ms1eMNO-w0aQ440rjFFW6u8xcWnvw"
+        android:apiKey="0NXGF68C-06XWHPeOv9xz27kCeGb3xDylEDmooA"
         android:clickable="true"
         android:enabled="true" />
 
+                
+    
      <Button
         android:id="@+id/button_checkhere"
         android:layout_width="fill_parent"

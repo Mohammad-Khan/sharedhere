@@ -87,6 +87,7 @@ public class DownloadActivity extends ListActivity
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		String filename = l.getItemAtPosition(position).toString();
+
 		shConnection.download(filename, shCurrentLocation);
 
 		// Displaying a toast message
