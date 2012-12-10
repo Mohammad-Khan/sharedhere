@@ -6,16 +6,21 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.app.AlertDialog;
-import android.app.ListActivity;
+import android.app.ExpandableListActivity;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.BaseExpandableListAdapter;
+import android.widget.ExpandableListAdapter;
+import android.widget.ExpandableListView;
+import android.widget.TextView;
 
 import com.sharedhere.model.SHClientServer;
 import com.sharedhere.model.SHFileInfo;
@@ -26,13 +31,13 @@ import com.sharedhere.model.SHLocation;
  * @author Zain
  *
  */
-public class DownloadActivity extends ListActivity
+public class DownloadActivity extends ExpandableListActivity
 {
 	private SHLocation shCurrentLocation = null;
 	private SHClientServer shConnection = null;
 	JSONObject jsonObject = null;
-	JSONArray jArray = null;
-
+	JSONArray jArray = null;	
+	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -40,22 +45,20 @@ public class DownloadActivity extends ListActivity
 		
 		ListContentTask task = new ListContentTask();
 		task.execute();
-	}
-
-	// OnClick checkhere button event,downloading file
-	@Override
-	public void onListItemClick(ListView l, View v, int position, long id) {
-		
-        SHFileInfo fileInfo = (SHFileInfo)l.getItemAtPosition(position);
-        String filename = fileInfo.GetName();
-//		DownloadTask task = new DownloadTask();
-//		task.execute(filename);
-		Intent i = new Intent(this, FileDialog.class);
-		i.putExtra("SHLocation", shCurrentLocation);
-		i.putExtra("FileName", filename);
-		startActivity(i);
-	}
+	}	
 	
+	public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id){
+		//TODO:Find a more graceful way of doing this. Its intent is to look for the "Download File" child being clicked.
+		if (childPosition == 4){ 
+			String filename = parent.getItemAtPosition(groupPosition).toString();
+			 
+			Intent i = new Intent(this, FileDialog.class);
+			i.putExtra("SHLocation", shCurrentLocation);
+			i.putExtra("FileName", filename);
+			startActivity(i);		
+		}
+		return true;
+	}
 	
 	private class ListContentTask extends AsyncTask<Void, Void, SHFileInfo[]> {
     	@Override
@@ -81,8 +84,7 @@ public class DownloadActivity extends ListActivity
 						String description = (String)jsonObject.getString("description");
 						Double latitude = Double.valueOf(jsonObject.getString("latitude"));
 						Double longitude = Double.valueOf(jsonObject.getString("longitude"));
-						
-						//String displayString = String.format("File Name: %s\nSize: %s KB\nDesc: %s", filename, size, description);
+								
 						SHFileInfo fileInfo = new SHFileInfo(size, filename, description, latitude, longitude );
 												
 						fileInformation.add(fileInfo);
@@ -115,11 +117,98 @@ public class DownloadActivity extends ListActivity
 				AlertDialog dialog = builder.create();
 				dialog.show();
 			}else{							
-				ArrayAdapter<SHFileInfo> mArrayAdapter = new ArrayAdapter<SHFileInfo>(DownloadActivity.this,
-						android.R.layout.simple_expandable_list_item_1, result);
-				setListAdapter(mArrayAdapter);
+				SHExpandableListAdapter expandableListAdapter = new SHExpandableListAdapter(result);
+				setListAdapter(expandableListAdapter);				
 			}
     	}
      }
+	
+	public class SHExpandableListAdapter extends BaseExpandableListAdapter {
+        private String[] groups;
+        private String[][] children;  
+        int downloadChildElementPosition = 4;
+        
+        public SHExpandableListAdapter(SHFileInfo[] fileInfo){
+        	groups = new String[fileInfo.length];
+        	ArrayList<String[]> childDataList = new ArrayList<String[]>();//use this to build the child 2d array
+        	String[] childData;
+        	for (int i =0; i < groups.length; i++){
+        		SHFileInfo file = fileInfo[i];
+        		groups[i] = file.GetName();
+        		childData = new String[5];
+        		childData[0]=file.GetSize().toString() + " KB";
+        		childData[1]="Desc:"+ file.GetDescription();
+        		childData[2]="Latitude: " +file.GetLatitude().toString();
+        		childData[3]="Longitude: " +file.GetLongitude().toString();
+        		childData[4]="Download File";
+        		childDataList.add(childData);
+        	}
+        	
+        	children = childDataList.toArray(new String[fileInfo.length][5]);        	
+        }
+        
+        public Object getChild(int groupPosition, int childPosition) {
+            return children[groupPosition][childPosition];
+        }
+
+        public long getChildId(int groupPosition, int childPosition) {
+            return childPosition;
+        }
+
+        public int getChildrenCount(int groupPosition) {
+            return children[groupPosition].length;
+        }
+
+        public TextView getGenericView() {
+            // Layout parameters for the ExpandableListView
+            AbsListView.LayoutParams lp = new AbsListView.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT, 64);
+
+            TextView textView = new TextView(DownloadActivity.this);
+            textView.setLayoutParams(lp);
+            // Center the text vertically
+            textView.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
+            // Set the text starting position
+            textView.setPadding(36, 0, 0, 0);
+            return textView;
+        }
+        
+        public View getChildView(int groupPosition, int childPosition, boolean isLastChild,
+            View convertView, ViewGroup parent) {
+            TextView textView = getGenericView();
+            textView.setText(getChild(groupPosition, childPosition).toString());
+            return textView;
+        }
+
+        public Object getGroup(int groupPosition) {
+            return groups[groupPosition];
+        }
+
+        public int getGroupCount() {
+            return groups.length;
+        }
+
+        public long getGroupId(int groupPosition) {
+            return groupPosition;
+        }
+
+        public View getGroupView(int groupPosition, boolean isExpanded, View convertView,
+                ViewGroup parent) {
+            TextView textView = getGenericView();
+            textView.setText(getGroup(groupPosition).toString());
+            return textView;
+        }
+
+        public boolean isChildSelectable(int groupPosition, int childPosition) {
+            if (childPosition == downloadChildElementPosition) 
+            	return true;
+            else return false;
+        }
+
+        public boolean hasStableIds() {
+            return true;
+        }
+
+    }
 	
 }
