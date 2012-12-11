@@ -70,12 +70,18 @@ public class SharedHereActivity extends MapActivity
 		locationCriteria = new Criteria();
 		locationCriteria.setAccuracy(Criteria.ACCURACY_COARSE);
 		locationProvider = locationManager.getBestProvider(locationCriteria, true);
-		
+<<<<<<< HEAD
+		//shCurrentLocation = locationManager.getLastKnownLocation(locationProvider);
 		Location l = new Location(locationProvider); 
 	    l.setLongitude(41.905479);
 		l.setLatitude(-87.631813);
 		shCurrentLocation = new SHLocation(l);
+
+=======
 		
+		shCurrentLocation = new SHLocation(locationManager.getLastKnownLocation(locationProvider));
+		
+>>>>>>> 2401e7ceb731ce1251e32beca9ea66cbd8182fd9
 		Log.d("initTracking", "bestprovider: "+locationProvider);
 
 		if (locationListener == null)

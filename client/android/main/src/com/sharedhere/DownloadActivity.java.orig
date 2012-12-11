@@ -57,7 +57,49 @@ public class DownloadActivity extends ExpandableListActivity
 			i.putExtra("FileName", filename);
 			startActivity(i);		
 		}
+<<<<<<< HEAD
 		return true;
+=======
+		
+		ArrayList<String> filenames = new ArrayList<String>();
+
+		// Parsing the JSON array
+		try {
+
+			for (int i = 0; i < jArray.length(); i++) {
+				jsonObject = jArray.getJSONObject(i);
+				String filename = (String) jsonObject.getString("filename");
+
+				filenames.add(filename);
+				Log.d("filename", filename);
+
+			}
+			String[] fnames = new String[filenames.size()];
+			fnames = filenames.toArray(fnames);
+			ArrayAdapter<String> mArrayAdapter = new ArrayAdapter<String>(this,
+					android.R.layout.simple_expandable_list_item_1, fnames);
+			setListAdapter(mArrayAdapter);
+
+		} catch (Exception e) {
+		}
+
+	}
+
+	// OnClick checkhere button event,downloading file
+	@Override
+	public void onListItemClick(ListView l, View v, int position, long id) {
+		String filename = l.getItemAtPosition(position).toString();
+
+		shConnection.download(filename, shCurrentLocation);
+
+		// Displaying a toast message
+		Context context = getApplicationContext();
+		CharSequence text = "Finished Downloading!";
+		int duration = Toast.LENGTH_SHORT;
+
+		Toast toast = Toast.makeText(context, text, duration);
+		toast.show();
+>>>>>>> 2401e7ceb731ce1251e32beca9ea66cbd8182fd9
 	}
 	
 	private class ListContentTask extends AsyncTask<Void, Void, SHFileInfo[]> {
@@ -177,7 +219,7 @@ public class DownloadActivity extends ExpandableListActivity
             View convertView, ViewGroup parent) {
             TextView textView = getGenericView();
             textView.setText(getChild(groupPosition, childPosition).toString());
-
+            return textView;
         }
 
         public Object getGroup(int groupPosition) {

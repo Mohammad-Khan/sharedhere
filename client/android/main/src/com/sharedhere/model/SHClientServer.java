@@ -49,6 +49,7 @@ public class SHClientServer {
 	
 	public SHClientServer (String server) {
 		this.serverAddress = server;
+		
 	}
 	
 	/**
@@ -57,6 +58,7 @@ public class SHClientServer {
 	 * @return List of GeoPoint objects
 	 */
 	public List<SHLocation> getPoi() {
+		System.out.println("POI");
 		httpClient = new DefaultHttpClient();
 		String serverPage = serverAddress+"poi.php";
 		httpPost = new HttpPost(serverPage);
@@ -80,6 +82,8 @@ public class SHClientServer {
 			
 			responseEntity = httpResponse.getEntity();
 			inputStream = responseEntity.getContent();
+			
+			//System.out.println(inputStream);
 			
 			inputStreamReader = new InputStreamReader(inputStream);
 			bufferedReader = new BufferedReader(inputStreamReader);
@@ -199,7 +203,7 @@ public class SHClientServer {
 				+ String.valueOf(REQUEST_DATA_DOWNLOAD) + "&filename="
 				+ filename + "&latitude=" + location.getLatitude()
 				+ "&longitude=" + location.getLongitude();
-		//File downloadDirectory = new File("/mnt/sdcard/Download");
+		//System.out.println(serverFileLocation); //Used for debugging
 		File downloadDirectory = new File(path);
 		try {
 		    //this is the file to be downloaded
@@ -222,10 +226,10 @@ public class SHClientServer {
 
 		} catch (MalformedURLException e) {
 		    Log.e("download", e.getMessage());
-		    return false; //added by SH to avoid unhandled exceptions below
+
 		} catch (IOException e) {
 		    Log.e("download", e.getMessage());
-		    return false; //added by SH to avoid unhandled exceptions below
+
 		}
 		
 		// Check if the to-be-downloaded file exists
@@ -277,6 +281,8 @@ public class SHClientServer {
             httpResponse = httpClient.execute(httpPost);
             responseEntity = httpResponse.getEntity();
 			
+  
+            
             /* TODO The code below is unused now.
              *  Use it to check if upload succeeded or not
              */
@@ -291,6 +297,7 @@ public class SHClientServer {
 			inputStream.close();
 			
 			result = stringBuilder.toString();
+			//System.out.println(result); //Used for debugging.
          
         } catch (Exception e){
            Log.e("upload_error", e.getMessage());

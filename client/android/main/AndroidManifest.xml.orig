@@ -3,13 +3,16 @@
       package="com.sharedhere"
       android:versionCode="1"
       android:versionName="1.0">
+<<<<<<< HEAD
     <uses-sdk android:minSdkVersion="11"
             android:targetSdkVersion="15" />
          
+=======
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
   	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
+>>>>>>> 2401e7ceb731ce1251e32beca9ea66cbd8182fd9
     <application android:label="@string/app_name" android:icon="@drawable/ic_launcher">
         <uses-library android:name="com.google.android.maps" />
         <activity android:name=".SharedHereActivity"
@@ -26,13 +29,17 @@
             android:theme="@android:style/Theme.Holo" />
         <activity
             android:name=".UploadActivity"
+<<<<<<< HEAD
             android:parentActivityName=".SharedHereActivity"
-    
             android:theme="@android:style/Theme.Holo" />
         <activity
             android:name=".FileDialog"
             android:parentActivityName=".SharedHereActivity"
             android:theme="@android:style/Theme.Holo" />        
+=======
+            android:theme="@android:style/Theme.NoTitleBar" />
+    
+>>>>>>> 2401e7ceb731ce1251e32beca9ea66cbd8182fd9
     </application>
 
 </manifest>

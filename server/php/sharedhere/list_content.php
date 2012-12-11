@@ -18,7 +18,7 @@ mysql_select_db(DB_NAME, $conn);
 $latitude = sh_truncate($_POST['latitude'], ".", 4);
 $longitude = sh_truncate($_POST['longitude'], ".", 4);
 
-$query = "SELECT filename,timestamp,size,description,latitude,longitude FROM content,location WHERE latitude = \"$latitude\" AND longitude = \"$longitude\" AND location.id = content.location_id";
+$query = "SELECT filename,timestamp,size,description,latitude,longitude FROM content,content_at,location WHERE latitude = \"$latitude\" AND longitude = \"$longitude\" AND location.id = content_at.location_id AND content.id = content_at.content_id";
 
 $mysql_result = mysql_query($query);
 

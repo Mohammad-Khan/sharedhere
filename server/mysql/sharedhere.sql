@@ -1,143 +1,132 @@
-DROP DATABASE IF EXISTS sharedhere;
+CREATE DATABASE  IF NOT EXISTS `sharedhere` /*!40100 DEFAULT CHARACTER SET latin1 */;
+USE `sharedhere`;
+-- MySQL dump 10.13  Distrib 5.5.16, for Win32 (x86)
+--
+-- Host: localhost    Database: sharedhere
+-- ------------------------------------------------------
+-- Server version	5.1.59-community
 
-CREATE DATABASE sharedhere;
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
-USE sharedhere;
+--
+-- Table structure for table `content`
+--
 
-CREATE TABLE location (
-        id INT PRIMARY KEY AUTO_INCREMENT,
-        latitude DECIMAL(6,4),
-        longitude DECIMAL(7,4)
-);
+DROP TABLE IF EXISTS `content`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `content` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `description` varchar(256) DEFAULT NULL,
+  `timestamp` datetime DEFAULT NULL,
+  `filename` varchar(256) DEFAULT NULL,
+  `size` decimal(14,0) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-CREATE TABLE content (
-	id INT PRIMARY KEY AUTO_INCREMENT,
-	description VARCHAR(256),
-    timestamp DATETIME,
-    filename VARCHAR(256),
-    size NUMERIC,
-    location_id INT,
-    FOREIGN KEY(location_id) REFERENCES location(id)
-);
+--
+-- Dumping data for table `content`
+--
 
-CREATE TABLE log (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    op_type ENUM('ContentInsert','ContentSelect','ContentDelete', 'LocationInsert','LocationSelect','LocationDelete'),
-    timestamp DATETIME,
-    query VARCHAR(4096),
-    client_name VARCHAR(128)
-);
+LOCK TABLES `content` WRITE;
+/*!40000 ALTER TABLE `content` DISABLE KEYS */;
+/*!40000 ALTER TABLE `content` ENABLE KEYS */;
+UNLOCK TABLES;
 
--- Trigger to log INSERT event on content table 
-DELIMITER |
+--
+-- Table structure for table `content_at`
+--
 
-CREATE TRIGGER log_content_insert BEFORE INSERT ON `content`
-FOR EACH ROW
-BEGIN
-    
-	DECLARE op_type INT;
-	DECLARE due_query VARCHAR(1024);
-	DECLARE time_stamp DATETIME;
-	-- DECLARE client VARCHAR(100); -- To be used in future to make the logging useful
-	SET op_type = 'ContentInsert';
-	SET time_stamp  = CONCAT(CURDATE(), " ", CURTIME());
-	SET due_query = (SELECT info FROM INFORMATION_SCHEMA.PROCESSLIST WHERE id = CONNECTION_ID());
-    INSERT INTO `log`(`op_type`, `timestamp`,`query`) VALUES (op_type, time_stamp, due_query);
-END;
-|
-DELIMITER ;
+DROP TABLE IF EXISTS `content_at`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `content_at` (
+  `content_id` int(11) NOT NULL,
+  `location_id` int(11) NOT NULL,
+  PRIMARY KEY (`content_id`,`location_id`),
+  KEY `content` (`content_id`),
+  KEY `location` (`location_id`),
+  CONSTRAINT `content` FOREIGN KEY (`content_id`) REFERENCES `content` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `location` FOREIGN KEY (`location_id`) REFERENCES `location` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- Trigger to log UPDATE event on content table
-DELIMITER |
+--
+-- Dumping data for table `content_at`
+--
 
-CREATE TRIGGER log_content_update BEFORE UPDATE ON `content`
-FOR EACH ROW
-BEGIN
-    
-	DECLARE op_type INT;
-	DECLARE update_query VARCHAR(1024);
-	DECLARE time_stamp DATETIME;
-	-- DECLARE client VARCHAR(100); -- To be used in future to make the logging useful
-	SET op_type = 'ContentUpdate';
-	SET time_stamp  = CONCAT(CURDATE(), " ", CURTIME());
-	SET update_query = (SELECT info FROM INFORMATION_SCHEMA.PROCESSLIST WHERE id = CONNECTION_ID());
-    INSERT INTO `log`(`op_type`, `timestamp`,`query`) VALUES (op_type, time_stamp, update_query);
-END;
-|
-DELIMITER ;
+LOCK TABLES `content_at` WRITE;
+/*!40000 ALTER TABLE `content_at` DISABLE KEYS */;
+/*!40000 ALTER TABLE `content_at` ENABLE KEYS */;
+UNLOCK TABLES;
 
--- Trigger to log DELETE event on content table
-DELIMITER |
+--
+-- Table structure for table `location`
+--
 
-CREATE TRIGGER log_content_delete BEFORE DELETE ON `content`
-FOR EACH ROW
-BEGIN
-    
-	DECLARE op_type INT;
-	DECLARE delete_query VARCHAR(1024);
-	DECLARE time_stamp DATETIME;
-	-- DECLARE client VARCHAR(100); -- To be used in future to make the logging useful
-	SET op_type = 'ContentDelete';
-	SET time_stamp  = CONCAT(CURDATE(), " ", CURTIME());
-	SET delete_query = (SELECT info FROM INFORMATION_SCHEMA.PROCESSLIST WHERE id = CONNECTION_ID());
-    INSERT INTO `log`(`op_type`, `timestamp`,`query`) VALUES (op_type, time_stamp, delete_query);
-END;
-|
-DELIMITER ;
+DROP TABLE IF EXISTS `location`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `location` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `latitude` decimal(6,4) DEFAULT NULL,
+  `longitude` decimal(7,4) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- Trigger to log INSERT event on content table 
-DELIMITER |
+--
+-- Dumping data for table `location`
+--
 
-CREATE TRIGGER log_location_insert BEFORE INSERT ON `location`
-FOR EACH ROW
-BEGIN
-    
-	DECLARE op_type INT;
-	DECLARE due_query VARCHAR(1024);
-	DECLARE time_stamp DATETIME;
-	-- DECLARE client VARCHAR(100); -- To be used in future to make the logging useful
-	SET op_type = 'LocationInsert';
-	SET time_stamp  = CONCAT(CURDATE(), " ", CURTIME());
-	SET due_query = (SELECT info FROM INFORMATION_SCHEMA.PROCESSLIST WHERE id = CONNECTION_ID());
-    INSERT INTO `log`(`op_type`, `timestamp`,`query`) VALUES (op_type, time_stamp, due_query);
-END;
-|
-DELIMITER ;
+LOCK TABLES `location` WRITE;
+/*!40000 ALTER TABLE `location` DISABLE KEYS */;
+/*!40000 ALTER TABLE `location` ENABLE KEYS */;
+UNLOCK TABLES;
 
--- Trigger to log UPDATE event on content table
-DELIMITER |
+--
+-- Table structure for table `log`
+--
 
-CREATE TRIGGER log_lcation_update BEFORE UPDATE ON `location`
-FOR EACH ROW
-BEGIN
-    
-	DECLARE op_type INT;
-	DECLARE update_query VARCHAR(1024);
-	DECLARE time_stamp DATETIME;
-	-- DECLARE client VARCHAR(100); -- To be used in future to make the logging useful
-	SET op_type = 'LocationUpdate';
-	SET time_stamp  = CONCAT(CURDATE(), " ", CURTIME());
-	SET update_query = (SELECT info FROM INFORMATION_SCHEMA.PROCESSLIST WHERE id = CONNECTION_ID());
-    INSERT INTO `log`(`op_type`, `timestamp`,`query`) VALUES (op_type, time_stamp, update_query);
-END;
-|
-DELIMITER ;
+DROP TABLE IF EXISTS `log`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `op_type` enum('ContentInsert','ContentSelect','ContentDelete','LocationInsert','LocationSelect','LocationDelete') DEFAULT NULL,
+  `timestamp` datetime DEFAULT NULL,
+  `query` varchar(4096) DEFAULT NULL,
+  `client_name` varchar(128) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- Trigger to log DELETE event on location table
-DELIMITER |
+--
+-- Dumping data for table `log`
+--
 
-CREATE TRIGGER log_location_delete BEFORE DELETE ON `location`
-FOR EACH ROW
-BEGIN
-    
-	DECLARE op_type INT;
-	DECLARE delete_query VARCHAR(1024);
-	DECLARE time_stamp DATETIME;
-	-- DECLARE client VARCHAR(100); -- To be used in future to make the logging useful
-	SET op_type = 'LocationDelete';
-	SET time_stamp  = CONCAT(CURDATE(), " ", CURTIME());
-	SET delete_query = (SELECT info FROM INFORMATION_SCHEMA.PROCESSLIST WHERE id = CONNECTION_ID());
-    INSERT INTO `log`(`op_type`, `timestamp`,`query`) VALUES (op_type, time_stamp, delete_query);
-END;
-|
-DELIMITER ;
+LOCK TABLES `log` WRITE;
+/*!40000 ALTER TABLE `log` DISABLE KEYS */;
+/*!40000 ALTER TABLE `log` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2012-12-05 16:15:23

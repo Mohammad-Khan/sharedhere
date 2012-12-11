@@ -177,7 +177,7 @@ public class DownloadActivity extends ExpandableListActivity
             View convertView, ViewGroup parent) {
             TextView textView = getGenericView();
             textView.setText(getChild(groupPosition, childPosition).toString());
-
+            return textView;
         }
 
         public Object getGroup(int groupPosition) {
