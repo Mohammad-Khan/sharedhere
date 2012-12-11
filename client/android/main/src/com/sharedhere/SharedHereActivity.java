@@ -52,7 +52,6 @@ public class SharedHereActivity extends MapActivity {
 		} catch (Exception e) {
 			alert("iniiTracking() is not working"
 					+ "\nPlease make sure to allow mock locations in settings.");
-			e.printStackTrace();
 
 		}
 
@@ -60,7 +59,6 @@ public class SharedHereActivity extends MapActivity {
 			initMapView();
 		} catch (Exception e) {
 			alert("initMapView() is not working");
-			e.printStackTrace();
 		}
 	}
 

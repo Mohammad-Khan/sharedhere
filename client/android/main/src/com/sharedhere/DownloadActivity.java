@@ -80,6 +80,7 @@ public class DownloadActivity extends ListActivity {
 			setListAdapter(mArrayAdapter);
 
 		} catch (Exception e) {
+			alert("Parsing JSONArray is not working");
 		}
 
 	}

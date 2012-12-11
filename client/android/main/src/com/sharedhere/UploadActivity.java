@@ -35,7 +35,6 @@ public class UploadActivity extends ListActivity {
 			processDirectory();
 		} catch (Exception e) {
 			alert("processDirectory() is not working");
-			e.printStackTrace();
 
 		}
 	}
