@@ -69,12 +69,12 @@ if (sh_mkdir("content/$posted_file_size", 0777)) {
 		exit;
 	}
 
-//Tells PHP file if it should upload the file or not. Will not upload the file if this is false.
+//Tells PHP file if it should upload the file or not. Will not upload the file if this is false. -- Cooper
 $uploadfile = false; 
 
 //Handle a duplicate file
 if (is_file($upload_file_path) == false) {
-	//http_response_code(405); // Set Http response to "Method not allowed" ... Took this out because it causes problems with how I handle duplicates. -- Cooper
+	//Took out the http_response_code(405); because it causes problems with how I handle duplicates. -- Cooper
 	print("Filename already exists");
 	$uploadfile = true;
 	

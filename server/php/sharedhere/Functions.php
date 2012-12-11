@@ -29,10 +29,4 @@ function sh_truncate($string, $char, $num) {
 	return substr($string, 0, 1+strpos($string, $char)+$num);               
 }
 
-function identical($fn1, $fn2)
-{
-
-}
-
-
 ?>
