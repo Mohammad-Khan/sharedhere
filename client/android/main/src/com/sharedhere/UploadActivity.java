@@ -2,6 +2,7 @@ package com.sharedhere;
 
 import java.io.File;
 
+import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -30,7 +31,13 @@ public class UploadActivity extends ListActivity {
 		currentLocation = (SHLocation) getIntent().getSerializableExtra(
 				"SHLocation");
 		// Process the root directory
-		processDirectory();
+		try {
+			processDirectory();
+		} catch (Exception e) {
+			alert("processDirectory() is not working");
+			e.printStackTrace();
+
+		}
 	}
 
 	@Override
@@ -50,10 +57,11 @@ public class UploadActivity extends ListActivity {
 			// accordingly
 			boolean uploadStatus = shConnection.upload(file.getAbsolutePath(),
 					currentLocation, "Is it a game, or is it real?");
-			if (uploadStatus)
+			if (uploadStatus) {
 				Toast.makeText(this, "File uploaded", Toast.LENGTH_LONG).show();
-			else
+			} else {
 				Toast.makeText(this, "Upload failed", Toast.LENGTH_LONG).show();
+			}
 		}
 	}
 
@@ -65,5 +73,13 @@ public class UploadActivity extends ListActivity {
 		File[] files = currentDirectory.listFiles();
 		SHArrayAdapter adapter = new SHArrayAdapter(this, files);
 		setListAdapter(adapter);
+	}
+
+	public void alert(String s) {
+		AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+		dialog.setTitle("Error");
+		dialog.setMessage(s);
+		dialog.setNeutralButton("Cool", null);
+		dialog.create().show();
 	}
 }

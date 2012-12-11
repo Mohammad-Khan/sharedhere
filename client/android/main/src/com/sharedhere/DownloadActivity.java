@@ -23,10 +23,9 @@ import com.sharedhere.model.SHLocation;
 /**
  * 
  * @author Zain
- *
+ * 
  */
-public class DownloadActivity extends ListActivity
-{
+public class DownloadActivity extends ListActivity {
 	private SHLocation shCurrentLocation = null;
 	private SHClientServer shConnection = null;
 	JSONObject jsonObject = null;
@@ -36,21 +35,23 @@ public class DownloadActivity extends ListActivity
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//setContentView(R.layout.download);
+		// setContentView(R.layout.download);
 
-		shCurrentLocation = (SHLocation) getIntent().getSerializableExtra("SHLocation");
+		shCurrentLocation = (SHLocation) getIntent().getSerializableExtra(
+				"SHLocation");
 
 		shConnection = new SHClientServer(getString(R.string.server_address));
 
 		// Content available at current location returned from Client-Server
 		// activity
 		jArray = shConnection.listContent(shCurrentLocation);
-		
-		// If no records available at this location show a message and exit activity
-		if(jArray == null || jArray.length()==0) {
+
+		// If no records available at this location show a message and exit
+		// activity
+		if (jArray == null || jArray.length() == 0) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setMessage("No files here!");
-			builder.setPositiveButton("OK", new OnClickListener() {	
+			builder.setPositiveButton("OK", new OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
 					DownloadActivity.this.finish();
 				}
@@ -58,7 +59,7 @@ public class DownloadActivity extends ListActivity
 			AlertDialog dialog = builder.create();
 			dialog.show();
 		}
-		
+
 		ArrayList<String> filenames = new ArrayList<String>();
 
 		// Parsing the JSON array
@@ -66,7 +67,7 @@ public class DownloadActivity extends ListActivity
 
 			for (int i = 0; i < jArray.length(); i++) {
 				jsonObject = jArray.getJSONObject(i);
-				String filename = (String) jsonObject.getString("filename");
+				String filename = jsonObject.getString("filename");
 
 				filenames.add(filename);
 				Log.d("filename", filename);
@@ -97,5 +98,13 @@ public class DownloadActivity extends ListActivity
 
 		Toast toast = Toast.makeText(context, text, duration);
 		toast.show();
+	}
+
+	public void alert(String s) {
+		AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+		dialog.setTitle("Error");
+		dialog.setMessage(s);
+		dialog.setNeutralButton("Cool", null);
+		dialog.create().show();
 	}
 }
