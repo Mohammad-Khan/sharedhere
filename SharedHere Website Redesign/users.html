@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<!-- webpage built using Twitter Bootstrap, an open source web framework -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>SharedHere</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+    </style>
+    <link href="http://twitter.github.com/bootstrap/assets/css/bootstrap-responsive.css" rel="stylesheet">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <link rel="shortcut icon" href="http://twitter.github.com/bootstrap/assets/ico/favicon.ico">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="http://twitter.github.com/bootstrap/assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="http://twitter.github.com/bootstrap/assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="http://twitter.github.com/bootstrap/assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="http://twitter.github.com/bootstrap/assets/ico/apple-touch-icon-57-precomposed.png">
+  </head>
+  <body>
+   <div class="navbar navbar-fixed-top navbar-inverse">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          
+          <a class="brand" href="#">SharedHere</a>
+          <div class="nav-collapse">
+            <ul class="nav">
+              <li class="active"><a href="#">Home</a></li>
+              <li><a href="#about">About</a></li>
+              <li><a href="#">Related Projects</a></li>
+              <li><a hred="#">FAQ</a></li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                      Contact
+                      <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a href="http://code.google.com/p/sharedhere/people/list">Founding Members</a></li>
+                  <li><a href="http://groups.google.com/group/sharedhere">Discussion Group</a></li>
+                </ul>
+              </li><!-- dropdown -->
+            </ul><!-- /.nav -->
+          </div><!--/.nav-collapse -->
+        </div><!-- /.container -->
+      </div><!-- /.navbar-inner -->
+    </div><!-- /.navbar -->
+  </div>
+
+    <!-- start of body container -->
+  <div class="container">
+    <div class="row-fluid">
+      <div class="span12">
+        <div class="hero-unit">
+          <h1>Getting Started</h1>
+            <br></br>
+            <p>To get any source code for the SharedHere project or any other project from code.google.com you need a application called “Git Bash” for Windows operating systems. It’s basically a command line interface kind of thing that interacts with Google Code's Open Source hosting. To download Git Bash, go <a href="https://help.github.com/articles/set-up-git"> HERE</a> and click the green “Download GitHub for Windows” button, this should start your download. When the download finishes locate the GitHub Setup.exe file on your machine and install it. Further information on configuring your Git Bash (GitHub) can be found on the same download page under “Setup Git” section.</p><p> Once you’re done with download and the installation part of Git Bash run the following command to get a local copy of the sharedhere project <code> git clone https://code.google.com/p/sharedhere/</code></p>
+        </div>
+      </div>
+    </div>
+  <div class="container-fluid">
+    <div class="row-fluid">
+      
+      <div class="span9">
+        <div class="well sidebar-nav">
+          <h2>Installation Instructions</h2>
+          <p>To run a Google Maps-integrated application on your Android device you need to obtain the Google API add- on which includes Maps' external library. The built-in classes of the Maps Library offers you built- in downloading, rendering and caching of Maps tiles as well as a variety of display options and controls.</p><p> Installing a google API Add-on is very simple and easy process; open your SDK manager using Window -> Android SDK Manager. You can find the appropriate API under the Android version you want to use, the android version and so the API that Sharedhere uses is Android 2.3.3 version so definitely install this version. You can also download the latest version of API for your future projects. Figure 1 shows the step of how to install the appropriate API</p>
+          <p><img src="img/sdk.jpg"></p>
+          <br>
+          <p>To utilize the power of Android's Maps Library you need to obtain Google Maps Android API map key to access Google maps data. To do this you must register with the Google Maps services and agree to the listed terms and conditions. Further detailed information on how to obtain the Google Maps API key can be found at <a href="https://developers.google.com/maps/documentation/android/mapkey">Googles' developer website</a> with comprehensive details on the Google Maps Android API External Library <a href="https://developers.google.com/maps/documentation/android/">HERE</a>.</p><br>
+          <p><h2>Importing the SharedHere Project into Eclipse</h2>
+            Start Eclipse and navigate to <b>File -> New -> Project</b>. You should see a folder labeled<b>Android</b> on your screen. Click the folder to expand it and select <b>Android Project from Existing Code</b>.</p>
+            <p><img src="img/eclipse1.jpg"></p><br>
+            <p>In the following window that appears, browse to the location where you cloned the project using git clone command in Git Bash and select <b>Finish</b> to end the process. Now you can see the project that you just created in the project explorer window on the left.</p><p><b>Tip: Try refactoring the project if there’s a red cross on the project and rename it; this would probably remove the error.</b></p>
+            <p>Since the SharedHere uses Google Maps, you have to configure changes in Eclipse to use the Google APIs to draw maps. To make the changes go to <b>Project -> Properties</b> and select <b>Android</b> along with the appropriate Google API.
+            <b>Tip: if the Google API is not allready installed, open the SDK manager and download the latest API.</b></p><br>
+            <p><img src="img/eclipse2.jpg"></p><br><br>
+        
+             <h2>Running SharedHere on an Android Device<img src="img/android.png" height="100" width="100"></h2>
+              <p>Connect an Android device to your machine and install the required USB drivers if necessary. Make sure that Remote Debugging is enabled on your device so you are able to run all the apps that you build on your Android device. To enable Remote Debugging go to <b>Settings -> Application -> Development -> Remote debugging</b>. In Eclipse, go to <b>Run -> run configuration -> Android Application -> Target -> Always prompt to pick a device</b>. To run your project on a virtual device (emulator) follow instructions on this <a href="http://developer.android.com/tools/devices/emulator.html.">page</a>.<p><b>Congratulations!</b> You have successfully installed the SharedHere application to run on your Android device.</p>
+            </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+<hr><br>
+ <footer>
+        <div class="navbar navbar-fixed-bottom navbar-inverse">
+          <div class="navbar-inner">
+            <div class="container">
+              <p style="color: #fff">© SharedHere 2012 <img src="img/shlogo.jpg" height="25" width="25"></p>
+              <p><i class="icon-envelope icon-white"></i><a href="http://sharedhere.com/contact-us.html">Contact</a></p>
+              <p style="color: #2ECCFA"><a href="http://opensource.org/licenses/MIT">SharedHere is released under the MIT License</p>
+          </div>
+        </div>
+      </footer>
+
+
+    <!-- javaScript dump -->
+    <script src="./Bootstrap, from Twitter_files/jquery.js"></script>
+    <script src="./Bootstrap, from Twitter_files/bootstrap-transition.js"></script>
+    <script src="./Bootstrap, from Twitter_files/bootstrap-alert.js"></script>
+    <script src="./Bootstrap, from Twitter_files/bootstrap-modal.js"></script>
+    <script src="./Bootstrap, from Twitter_files/bootstrap-dropdown.js"></script>
+    <script src="./Bootstrap, from Twitter_files/bootstrap-scrollspy.js"></script>
+    <script src="./Bootstrap, from Twitter_files/bootstrap-tab.js"></script>
+    <script src="./Bootstrap, from Twitter_files/bootstrap-tooltip.js"></script>
+    <script src="./Bootstrap, from Twitter_files/bootstrap-popover.js"></script>
+    <script src="./Bootstrap, from Twitter_files/bootstrap-button.js"></script>
+    <script src="./Bootstrap, from Twitter_files/bootstrap-collapse.js"></script>
+    <script src="./Bootstrap, from Twitter_files/bootstrap-carousel.js"></script>
+    <script src="./Bootstrap, from Twitter_files/bootstrap-typeahead.js"></script>
+
+  </html>
